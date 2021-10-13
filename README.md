@@ -5,3 +5,8 @@ Beaucoup plus complexes à maîtriser que les techniques synchrones, la programm
 Dans le monde du développement web, historiquement les sites internet étaient basés sur un modèle synchrone : l’utilisateur attend que la page soit entièrement chargée avant de pouvoir interagir avec.<br/>
 Depuis environs une douzaine d’année, nous disposons de frameworks nous permettant de réaliser des applications web, de plus en plus complexes, qui peuvent charger leur contenu de manière asynchrone, sans pour autant que les spécificités du monde mobiles ne soient prises en compte (connexion temporairement indisponible, mauvais débit, gestion d’énergie, etc.).<br/>
 Dans ce laboratoire nous allons illustrer l’utilisation de différentes techniques de protocoles asynchrones sur du mobile.<br/>
+
+Etudiants réalisant le laboratoire:
+- Berney Alec
+- Forestier Quentin
+- Herzig Melvyn
