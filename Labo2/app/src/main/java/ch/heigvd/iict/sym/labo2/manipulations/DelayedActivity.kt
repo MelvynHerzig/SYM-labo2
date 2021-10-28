@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 import java.lang.ref.WeakReference
@@ -39,8 +40,25 @@ class DelayedActivity : AppCompatActivity() {
         sendButton = findViewById(R.id.delayed_btn_send)
         responseField = findViewById(R.id.delayed_response_field)
 
-        sendButton.setOnClickListener {
+        /*val mcm = SymComManager(WeakReference(object : CommunicationEventListener {
+            override fun handleServerResponse(response: String) {
 
-        }
+                if (responseField.text == getString(R.string.str_waiting_server)) {
+                    responseField.text = ""
+                }
+
+                responseField.text = "$responseField\n$response"
+            }
+        }))*/
+
+        /*sendButton.setOnClickListener {
+            responseField.text = getString(R.string.str_waiting_server)
+            mcm.sendRequest(
+                "http://mobile.iict.ch/api/txt",
+                userInput.text.toString(),
+                SymComManager.ContentType.TEXT,
+                SymComManager.RequestMethod.POST
+            )
+        }*/
     }
 }

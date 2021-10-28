@@ -7,8 +7,9 @@ import android.widget.EditText
 import android.widget.TextView
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
+import ch.heigvd.iict.sym.labo2.comm.ContentType
+import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
-import java.lang.ref.WeakReference
 
 /**
  * Activité implémentant le protocole de communication asynchrone.
@@ -39,20 +40,20 @@ class AsyncActivity : AppCompatActivity() {
         sendButton = findViewById(R.id.async_btn_send)
         responseField = findViewById(R.id.async_response_field)
 
+        val mcm = SymComManager(object : CommunicationEventListener {
+            override fun handleServerResponse(response: String) {
+                responseField.text = response
+            }
+        })
+
         sendButton.setOnClickListener {
             responseField.text = getString(R.string.str_waiting_server)
-
-            val mcm = SymComManager(WeakReference(object : CommunicationEventListener {
-                override fun handleServerResponse(response: String) {
-                    responseField.text = response
-                }
-            }))
 
             mcm.sendRequest(
                 "http://mobile.iict.ch/api/txt",
                 userInput.text.toString(),
-                SymComManager.ContentType.TEXT,
-                SymComManager.RequestMethod.POST
+                ContentType.TEXT,
+                RequestMethod.POST
             )
         }
     }

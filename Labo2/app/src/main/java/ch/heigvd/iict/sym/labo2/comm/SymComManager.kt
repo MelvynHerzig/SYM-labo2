@@ -14,43 +14,76 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
-class SymComManager(var communicationEventListener: WeakReference<CommunicationEventListener?>? = null) {
+// Spécification du content type
+enum class ContentType(val value: String) {
+    TEXT("text/plain"), JSON("application/json")
+}
 
-    enum class ContentType(val value: String) {
-        TEXT("text/plain"), JSON("application/json")
-    }
+// Spécification de la méthode
+enum class RequestMethod(val value: String) {
+    GET("GET"), POST("POST")
+}
 
-    enum class RequestMethod(val value: String) {
-        GET("GET"), POST("POST")
-    }
+/**
+ * Classe responsable d'effectuer des requêtes asynchrones au serveur.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
+ */
+class SymComManager(var mCommunicationEventListener: CommunicationEventListener) {
 
-    fun setCommunicationListener(listener : WeakReference<CommunicationEventListener?>){
-        this.communicationEventListener = listener
-    }
-
-    fun sendRequest(
-        url: String,
-        request: String,
-        contentType: ContentType,
-        requestMethod: RequestMethod
+    /**
+     * Permet d'envoyer une requête au serveur
+     */
+    fun sendRequest( url: String,
+                     request: String,
+                     contentType: ContentType,
+                     requestMethod: RequestMethod
     ) {
-        val handler = Handler(Looper.getMainLooper())
 
-        Thread {
+        // Préparation du runnable
+        val getData = SymComThread(url, request, contentType, requestMethod, mCommunicationEventListener)
 
-            val connection = URL(url).openConnection() as HttpURLConnection
+        // Lancement du thread
+        Thread(getData).start()
+    }
 
+
+    /**
+     * Classe interne sans référence sur la classe mère pour l'exécution de communication.
+     * @param url Serveur sur lequel se connecter.
+     * @param request Contenu.
+     * @param contentType Type de contenu (en header http)
+     * @param requestMethod type de requête http.
+     * @param listener Listener à notifier une fois la réponse reçue.
+     */
+    private class SymComThread(url          : String,
+                               request      : String,
+                               contentType  : ContentType,
+                               requestMethod: RequestMethod,
+                               listener     : CommunicationEventListener) : Runnable {
+
+        private var mUrl           : String = url
+        private var mRequest       : String = request
+        private var mContentType   : ContentType = contentType
+        private var mRequestMethod : RequestMethod = requestMethod
+        private var mListener: WeakReference<CommunicationEventListener> = WeakReference(listener)
+
+        override fun run() {
+
+            val handler = Handler(Looper.getMainLooper())
+            val connection = URL(mUrl).openConnection() as HttpURLConnection
 
             connection.connectTimeout = 300000
 
             try {
-                val postData = request.toByteArray(StandardCharsets.UTF_8)
+                val postData = mRequest.toByteArray(StandardCharsets.UTF_8)
 
-                connection.requestMethod = requestMethod.value
-                connection.doOutput = requestMethod != RequestMethod.GET
+                connection.requestMethod = mRequestMethod.value
+                connection.doOutput = mRequestMethod != RequestMethod.GET
                 connection.setRequestProperty("charset", "utf-8")
                 connection.setRequestProperty("Content-length", postData.size.toString())
-                connection.setRequestProperty("Content-Type", contentType.value)
+                connection.setRequestProperty("Content-Type", mContentType.value)
 
 
                 try {
@@ -67,22 +100,12 @@ class SymComManager(var communicationEventListener: WeakReference<CommunicationE
 
                     val response = reader.readLine()
 
-                    SystemClock.sleep(200000)
+                    // Pause volontaire pour simuler une requête "longue"
+                    SystemClock.sleep(20000)
 
-                    handler.post{
-
-                        val cel = communicationEventListener?.get()
-                        if (cel != null) {
-                            cel.handleServerResponse(response)
-                            println("NOT NULL NOT NULL")
-                        }
-                        else {
-                            println("NULL NULL NULL")
-                        }
-
-
+                    handler.post {
+                        mListener.get()?.handleServerResponse(response)
                     }
-
 
                 } catch (exception: Exception) {
                     exception.printStackTrace()
@@ -93,6 +116,6 @@ class SymComManager(var communicationEventListener: WeakReference<CommunicationE
             } finally {
                 connection.disconnect()
             }
-        }.start()
+        }
     }
 }
