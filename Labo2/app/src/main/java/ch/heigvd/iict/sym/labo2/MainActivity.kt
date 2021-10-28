@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import ch.heigvd.iict.sym.labo2.manipulations.AsyncActivity
+import ch.heigvd.iict.sym.labo2.manipulations.DelayedActivity
 
 /**
  * Activité principale permettant de lancer les 5 activités
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         delayedButton.setOnClickListener{
-            //startActivity(Intent(this, AsyncActivity::class.java))
+            startActivity(Intent(this, DelayedActivity::class.java))
         }
 
         serializedButton.setOnClickListener{

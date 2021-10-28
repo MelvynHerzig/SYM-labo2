@@ -9,4 +9,5 @@
     <string name="str_send">Send</string>
     <string name="str_response_title"><b>Server response:</b></string>
     <string name="str_none">{none}</string>
+    <string name="str_waiting_server">Waiting for server response...</string>
 </resources>

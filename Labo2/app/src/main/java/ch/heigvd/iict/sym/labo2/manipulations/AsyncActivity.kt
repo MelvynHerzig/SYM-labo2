@@ -40,7 +40,7 @@ class AsyncActivity : AppCompatActivity() {
         responseField = findViewById(R.id.async_response_field)
 
         sendButton.setOnClickListener {
-            responseField.text = "waiting for server response..."
+            responseField.text = getString(R.string.str_waiting_server)
 
             val mcm = SymComManager(WeakReference(object : CommunicationEventListener {
                 override fun handleServerResponse(response: String) {
