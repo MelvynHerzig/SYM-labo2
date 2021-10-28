@@ -2,17 +2,19 @@ package ch.heigvd.iict.sym.labo2.comm
 
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.InputStreamReader
 import java.lang.Exception
+import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
-class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
+class SymComManager(var communicationEventListener: WeakReference<CommunicationEventListener?>) {
 
     enum class ContentType(val value: String) {
         TEXT("text/plain"), JSON("application/json")
@@ -61,8 +63,20 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
                     val response = reader.readLine()
 
+                    SystemClock.sleep(15000)
+
                     handler.post{
-                        communicationEventListener?.handleServerResponse(response)
+
+                        val cel = communicationEventListener.get()
+                        if (cel != null) {
+                            cel.handleServerResponse(response)
+                            println("NOT NULL NOT NULL")
+                        }
+                        else {
+                            println("NULL NULL NULL")
+                        }
+
+
                     }
 
 

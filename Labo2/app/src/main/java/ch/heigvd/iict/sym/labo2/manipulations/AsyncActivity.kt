@@ -8,6 +8,7 @@ import android.widget.TextView
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
+import java.lang.ref.WeakReference
 
 /**
  * Activité implémentant le protocole de communication asynchrone.
@@ -40,7 +41,7 @@ class AsyncActivity : AppCompatActivity(), CommunicationEventListener {
 
         sendButton.setOnClickListener {
             responseField.text = "waiting for server response..."
-            SymComManager(this).sendRequest(
+            SymComManager(WeakReference(this)).sendRequest(
                 "http://mobile.iict.ch/api/txt",
                 userInput.text.toString(),
                 SymComManager.ContentType.TEXT,
