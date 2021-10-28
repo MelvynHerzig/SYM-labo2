@@ -2,6 +2,7 @@ package ch.heigvd.iict.sym.labo2.comm
 
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.io.BufferedReader
 import java.io.DataInputStream
@@ -20,6 +21,10 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
     enum class RequestMethod(val value: String) {
         GET("GET"), POST("POST")
+    }
+
+    fun setCommunicationListener(listener : CommunicationEventListener){
+        this.communicationEventListener = listener;
     }
 
     fun sendRequest(
@@ -60,6 +65,8 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     val reader = BufferedReader(InputStreamReader(inputstream))
 
                     val response = reader.readLine()
+
+                    SystemClock.sleep(200000)
 
                     handler.post{
                         communicationEventListener?.handleServerResponse(response)

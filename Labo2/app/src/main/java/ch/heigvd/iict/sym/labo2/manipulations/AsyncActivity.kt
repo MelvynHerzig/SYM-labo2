@@ -15,7 +15,7 @@ import ch.heigvd.iict.sym.labo2.comm.SymComManager
  * @author Forestier Quentin
  * @author Herzig Melvyn
  */
-class AsyncActivity : AppCompatActivity(), CommunicationEventListener {
+class AsyncActivity : AppCompatActivity() {
 
     // Référence sur le champ input de l'utilisateur.
     private lateinit var userInput: EditText
@@ -40,16 +40,21 @@ class AsyncActivity : AppCompatActivity(), CommunicationEventListener {
 
         sendButton.setOnClickListener {
             responseField.text = "waiting for server response..."
-            SymComManager(this).sendRequest(
+            val mcm = SymComManager()
+            mcm.setCommunicationListener(object : CommunicationEventListener {
+                override fun handleServerResponse(response: String) {
+                    responseField.text = response
+                }
+            })
+
+            mcm.setCommunicationListener()
+
+            mcm.sendRequest(
                 "http://mobile.iict.ch/api/txt",
                 userInput.text.toString(),
                 SymComManager.ContentType.TEXT,
                 SymComManager.RequestMethod.POST
             )
         }
-    }
-
-    override fun handleServerResponse(response: String) {
-        responseField.text = response
     }
 }
