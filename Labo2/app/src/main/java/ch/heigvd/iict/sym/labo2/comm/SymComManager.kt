@@ -42,12 +42,15 @@ class SymComManager(var mCommunicationEventListener: CommunicationEventListener)
     ) {
 
         // Préparation du runnable
-        val getData = SymComThread(url, request, contentType, requestMethod, mCommunicationEventListener)
+        var symComRunnable = SymComRunnable(url,
+                                            request,
+                                            contentType,
+                                            requestMethod,
+                                            mCommunicationEventListener)
 
         // Lancement du thread
-        Thread(getData).start()
+        Thread(symComRunnable).start()
     }
-
 
     /**
      * Classe interne sans référence sur la classe mère pour l'exécution de communication.
@@ -57,11 +60,11 @@ class SymComManager(var mCommunicationEventListener: CommunicationEventListener)
      * @param requestMethod type de requête http.
      * @param listener Listener à notifier une fois la réponse reçue.
      */
-    private class SymComThread(url          : String,
-                               request      : String,
-                               contentType  : ContentType,
-                               requestMethod: RequestMethod,
-                               listener     : CommunicationEventListener) : Runnable {
+    private class SymComRunnable(url          : String,
+                                 request      : String,
+                                 contentType  : ContentType,
+                                 requestMethod: RequestMethod,
+                                 listener     : CommunicationEventListener) : Runnable {
 
         private var mUrl           : String = url
         private var mRequest       : String = request
