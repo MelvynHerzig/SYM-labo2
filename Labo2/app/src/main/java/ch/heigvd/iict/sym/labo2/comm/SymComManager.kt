@@ -9,11 +9,12 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.InputStreamReader
 import java.lang.Exception
+import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
-class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
+class SymComManager(var communicationEventListener: WeakReference<CommunicationEventListener?>? = null) {
 
     enum class ContentType(val value: String) {
         TEXT("text/plain"), JSON("application/json")
@@ -23,8 +24,8 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         GET("GET"), POST("POST")
     }
 
-    fun setCommunicationListener(listener : CommunicationEventListener){
-        this.communicationEventListener = listener;
+    fun setCommunicationListener(listener : WeakReference<CommunicationEventListener?>){
+        this.communicationEventListener = listener
     }
 
     fun sendRequest(
@@ -69,7 +70,17 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     SystemClock.sleep(200000)
 
                     handler.post{
-                        communicationEventListener?.handleServerResponse(response)
+
+                        val cel = communicationEventListener?.get()
+                        if (cel != null) {
+                            cel.handleServerResponse(response)
+                            println("NOT NULL NOT NULL")
+                        }
+                        else {
+                            println("NULL NULL NULL")
+                        }
+
+
                     }
 
 

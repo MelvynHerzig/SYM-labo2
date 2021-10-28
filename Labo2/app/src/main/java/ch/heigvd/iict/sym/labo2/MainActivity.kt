@@ -48,19 +48,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         delayedButton.setOnClickListener{
-            startActivity(Intent(this, AsyncActivity::class.java))
+            //startActivity(Intent(this, AsyncActivity::class.java))
         }
 
         serializedButton.setOnClickListener{
-            startActivity(Intent(this, AsyncActivity::class.java))
+            //startActivity(Intent(this, AsyncActivity::class.java))
         }
 
         compressedButton.setOnClickListener{
-            startActivity(Intent(this, AsyncActivity::class.java))
+            //startActivity(Intent(this, AsyncActivity::class.java))
         }
 
         graphqlButton.setOnClickListener{
-            startActivity(Intent(this, AsyncActivity::class.java))
+            //startActivity(Intent(this, AsyncActivity::class.java))
         }
     }
 }
