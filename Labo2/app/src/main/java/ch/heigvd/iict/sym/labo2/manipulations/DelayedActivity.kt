@@ -1,3 +1,9 @@
+/**
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
+ */
+
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import androidx.appcompat.app.AppCompatActivity
@@ -7,14 +13,13 @@ import android.widget.EditText
 import android.widget.TextView
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
+import ch.heigvd.iict.sym.labo2.comm.ContentType
+import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
-import java.lang.ref.WeakReference
+import ch.heigvd.iict.sym.labo2.comm.SymComManagerDelayed
 
 /**
  * Activité implémentant le protocole de communication retardé.
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
  */
 class DelayedActivity : AppCompatActivity() {
 
@@ -26,6 +31,9 @@ class DelayedActivity : AppCompatActivity() {
 
     // Référence sur le champ d'affichage de la réponse.
     private lateinit var responseField: TextView
+
+    // Référence sur le gestionnaire de communication.
+    private lateinit var symComManager: SymComManager
 
     /**
      * Binding des éléments graphiques
@@ -40,25 +48,39 @@ class DelayedActivity : AppCompatActivity() {
         sendButton = findViewById(R.id.delayed_btn_send)
         responseField = findViewById(R.id.delayed_response_field)
 
-        /*val mcm = SymComManager(WeakReference(object : CommunicationEventListener {
+        symComManager = SymComManagerDelayed(object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
 
                 if (responseField.text == getString(R.string.str_waiting_server)) {
                     responseField.text = ""
                 }
 
-                responseField.text = "$responseField\n$response"
+                if(responseField.text == "") {
+                    responseField.text = response
+                }
+                else {
+                    "${responseField.text}\n------\n$response".also { responseField.text = it }
+                }
             }
-        }))*/
+        })
 
-        /*sendButton.setOnClickListener {
+        sendButton.setOnClickListener {
             responseField.text = getString(R.string.str_waiting_server)
-            mcm.sendRequest(
+
+            symComManager.sendRequest(
                 "http://mobile.iict.ch/api/txt",
                 userInput.text.toString(),
-                SymComManager.ContentType.TEXT,
-                SymComManager.RequestMethod.POST
+                ContentType.TEXT,
+                RequestMethod.POST
             )
-        }*/
+        }
+    }
+
+    /**
+     * Notifie au symComManager qu'il peut clore le thread de communication
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        symComManager.destroy()
     }
 }
