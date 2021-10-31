@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import ch.heigvd.iict.sym.labo2.manipulations.AsyncActivity
 import ch.heigvd.iict.sym.labo2.manipulations.DelayedActivity
+import ch.heigvd.iict.sym.labo2.manipulations.GraphqlActivity
 
 /**
  * Activité principale permettant de lancer les 5 activités
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         graphqlButton.setOnClickListener{
-            //startActivity(Intent(this, AsyncActivity::class.java))
+            startActivity(Intent(this, GraphqlActivity::class.java))
         }
     }
 }
