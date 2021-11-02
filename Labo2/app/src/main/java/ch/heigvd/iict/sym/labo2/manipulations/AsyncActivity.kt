@@ -16,6 +16,7 @@ import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
+import ch.heigvd.iict.sym.labo2.comm.SymComRequest
 
 /**
  * Activité implémentant le protocole de communication asynchrone.
@@ -46,29 +47,27 @@ class AsyncActivity : AppCompatActivity() {
         sendButton = findViewById(R.id.async_btn_send)
         responseField = findViewById(R.id.async_response_field)
 
-        symComManager = SymComManager(object : CommunicationEventListener {
+        symComManager = SymComManager(this, object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
                 responseField.text = response
             }
         })
 
         sendButton.setOnClickListener {
-            responseField.text = getString(R.string.str_waiting_server)
 
-            symComManager.sendRequest(
-                "http://mobile.iict.ch/api/txt",
-                userInput.text.toString(),
-                ContentType.TEXT,
-                RequestMethod.POST
-            )
+            responseField.text = getString(R.string.str_waiting_server)
+            symComManager.sendRequest( SymComRequest("http://mobile.iict.ch/api/txt",
+                                                     userInput.text.toString(),
+                                                     ContentType.TEXT,
+                                                     RequestMethod.POST))
         }
     }
 
     /**
-     * Notifie au symComManager qu'il peut clore le thread de communication
+     * Signale au SymComManager la fin de l'activité
      */
     override fun onDestroy() {
         super.onDestroy()
-        symComManager.destroy()
+        symComManager.quit()
     }
 }

@@ -7,64 +7,74 @@ package ch.heigvd.iict.sym.labo2.comm
 
 import android.os.Handler
 import android.os.Looper
-import android.os.Message
+import android.os.SystemClock
+import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
+import java.io.BufferedReader
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.InputStreamReader
 import java.lang.ref.WeakReference
-
-// Clé permettant de retrouver l'exécutable dans un bundle.
-const val RUN_KEY = "KeyRun"
-
-/**
- * Spécification du content type
- */
-enum class MessageWhat(val value: String) {
-    TASK("text/plain"), EXIT("application/json")
-}
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.charset.StandardCharsets
 
 /**
- * Classe implémentant le thread de communication http avec un serveur.
- * Pour des raisons de simplicité, le thread communique avec le même serveur et avec le même contenu.
+ * Classe implémentant un thread de communication http pour le SymComManager
+ * @param listener Méthode à appeler une fois la réponse reçue
+ * @param request Requête à transmettre
  */
-class SymComThread() : Thread() {
+class SymComThread(val listener : WeakReference<CommunicationEventListener>,
+                   val request  : SymComRequest) : Thread() {
 
     /**
-     * Handler associé au thread.
-     */
-    var mHandler: Handler? = null
-    get() = field
-    private set
-
-    var mLooper: Looper? = null
-    get() = field
-    private set
-
-    /**
-     * Handler permettant le transfert de message au SymComThread
-     */
-    private class SymComThreadHandler(symComThread: SymComThread) : Handler(Looper.myLooper()!!) {
-
-        // Référence sur le thread.
-        private val mThread: WeakReference<SymComThread>
-
-        override fun handleMessage(msg: Message) {
-            post(msg.data.get(RUN_KEY) as Runnable)
-        }
-
-        init {
-            mThread = WeakReference(symComThread)
-        }
-    }
-
-    /**
-     * Exécution du thread sur le looper.
+     * Exécution
      */
     override fun run() {
 
-        Looper.prepare()
-        mLooper = Looper.myLooper()
+        val connection = URL(request.url).openConnection() as HttpURLConnection
 
-        mHandler = SymComThreadHandler(this)
+        connection.connectTimeout = 300000
 
-        Looper.loop()
+        try {
+            val postData = request.body.toByteArray(StandardCharsets.UTF_8)
+
+            connection.requestMethod = request.requestMethod.value
+            connection.doOutput = request.requestMethod != RequestMethod.GET
+            connection.setRequestProperty("charset", "utf-8")
+            connection.setRequestProperty("Content-length", postData.size.toString())
+            connection.setRequestProperty("Content-Type", request.contentType.value)
+
+
+            try {
+                val outputStream = DataOutputStream(connection.outputStream)
+                outputStream.write(postData)
+                outputStream.flush()
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+
+            try {
+                val inputstream = DataInputStream(connection.inputStream)
+                val reader = BufferedReader(InputStreamReader(inputstream))
+
+                val response = reader.readLine()
+
+                // Pause volontaire pour simuler une requête "longue"
+                SystemClock.sleep(2000)
+
+                Handler(Looper.getMainLooper()).post {
+                    listener.get()?.handleServerResponse(response)
+                }
+
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            connection.disconnect()
+        }
     }
 }
 
