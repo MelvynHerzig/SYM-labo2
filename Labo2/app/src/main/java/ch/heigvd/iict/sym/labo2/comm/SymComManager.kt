@@ -77,7 +77,7 @@ class SymComManager(context: Context) {
 
         if(mCommunicationEventListener != null && checkForInternet()) {
             // Démarrage transmission
-            SymComThread(mCommunicationEventListener as WeakReference<CommunicationEventListener>, request).start()
+            SymComThread(mCommunicationEventListener, request).start()
         } else {
             mQueue.add(Pair(request, mCommunicationEventListener as WeakReference<CommunicationEventListener>))
         }

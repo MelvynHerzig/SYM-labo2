@@ -25,7 +25,7 @@ class DelayedActivity : BaseActivity() {
     // Référence sur le champ input de l'utilisateur.
     protected lateinit var userInput: EditText
 
-    // Référence sur le bouton d'annulation.
+    // Référence sur le bouton d'envoi.
     protected lateinit var sendButton: Button
 
     // Référence sur le champ d'affichage de la réponse.
