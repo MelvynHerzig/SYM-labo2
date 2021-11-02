@@ -6,7 +6,6 @@
 
 package ch.heigvd.iict.sym.labo2.manipulations
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -21,19 +20,16 @@ import ch.heigvd.iict.sym.labo2.comm.SymComRequest
 /**
  * Activité implémentant le protocole de communication retardé.
  */
-class DelayedActivity : AppCompatActivity() {
+class DelayedActivity : BaseActivity() {
 
     // Référence sur le champ input de l'utilisateur.
-    private lateinit var userInput: EditText
+    protected lateinit var userInput: EditText
 
     // Référence sur le bouton d'annulation.
-    private lateinit var sendButton: Button
+    protected lateinit var sendButton: Button
 
     // Référence sur le champ d'affichage de la réponse.
-    private lateinit var responseField: TextView
-
-    // Référence sur le gestionnaire de communication.
-    private lateinit var symComManager: SymComManager
+    protected lateinit var responseField: TextView
 
     /**
      * Binding des éléments graphiques
@@ -55,10 +51,9 @@ class DelayedActivity : AppCompatActivity() {
                     responseField.text = ""
                 }
 
-                if(responseField.text == "") {
+                if (responseField.text == "") {
                     responseField.text = response
-                }
-                else {
+                } else {
                     "${responseField.text}\n------\n$response".also { responseField.text = it }
                 }
             }
@@ -67,18 +62,14 @@ class DelayedActivity : AppCompatActivity() {
         sendButton.setOnClickListener {
 
             responseField.text = getString(R.string.str_waiting_server)
-            symComManager.sendRequest( SymComRequest("http://mobile.iict.ch/api/txt",
-                                                     userInput.text.toString(),
-                                                     ContentType.TEXT,
-                                                     RequestMethod.POST))
+            symComManager.sendRequest(
+                SymComRequest(
+                    "http://mobile.iict.ch/api/txt",
+                    userInput.text.toString(),
+                    ContentType.TEXT,
+                    RequestMethod.POST
+                )
+            )
         }
-    }
-
-    /**
-     * Signale au SymComManager la fin de l'activité
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        symComManager.quit()
     }
 }

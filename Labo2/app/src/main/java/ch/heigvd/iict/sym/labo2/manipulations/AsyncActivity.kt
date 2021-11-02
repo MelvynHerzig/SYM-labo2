@@ -21,19 +21,16 @@ import ch.heigvd.iict.sym.labo2.comm.SymComRequest
 /**
  * Activité implémentant le protocole de communication asynchrone.
  */
-class AsyncActivity : AppCompatActivity() {
+class AsyncActivity : BaseActivity() {
 
     // Référence sur le champ input de l'utilisateur.
-    private lateinit var userInput: EditText
+    protected lateinit var userInput: EditText
 
     // Référence sur le bouton d'annulation.
-    private lateinit var sendButton: Button
+    protected lateinit var sendButton: Button
 
     // Référence sur le champ d'affichage de la réponse.
-    private lateinit var responseField: TextView
-
-    // Référence sur le gestionnaire de communication.
-    private lateinit var symComManager: SymComManager
+    protected lateinit var responseField: TextView
 
     /**
      * Attachement des éléments graphiques
@@ -61,13 +58,5 @@ class AsyncActivity : AppCompatActivity() {
                                                      ContentType.TEXT,
                                                      RequestMethod.POST))
         }
-    }
-
-    /**
-     * Signale au SymComManager la fin de l'activité
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        symComManager.quit()
     }
 }
