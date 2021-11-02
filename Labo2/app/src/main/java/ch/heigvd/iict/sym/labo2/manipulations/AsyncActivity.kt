@@ -23,6 +23,15 @@ import ch.heigvd.iict.sym.labo2.comm.SymComRequest
  */
 class AsyncActivity : BaseActivity() {
 
+    // Référence sur le champ input de l'utilisateur.
+    protected lateinit var userInput: EditText
+
+    // Référence sur le bouton d'annulation.
+    protected lateinit var sendButton: Button
+
+    // Référence sur le champ d'affichage de la réponse.
+    protected lateinit var responseField: TextView
+
     /**
      * Attachement des éléments graphiques
      */

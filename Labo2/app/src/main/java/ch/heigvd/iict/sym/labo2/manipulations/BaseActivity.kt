@@ -17,14 +17,7 @@ import ch.heigvd.iict.sym.labo2.comm.SymComManager
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    // Référence sur le champ input de l'utilisateur.
-    protected lateinit var userInput: EditText
 
-    // Référence sur le bouton d'annulation.
-    protected lateinit var sendButton: Button
-
-    // Référence sur le champ d'affichage de la réponse.
-    protected lateinit var responseField: TextView
 
     // Référence sur le gestionnaire de communication.
     protected lateinit var symComManager: SymComManager

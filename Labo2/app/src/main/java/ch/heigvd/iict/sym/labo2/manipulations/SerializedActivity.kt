@@ -10,7 +10,7 @@ import ch.heigvd.iict.sym.labo2.R
  * @author Forestier Quentin
  * @author Herzig Melvyn
  */
-class SerializedActivity : AppCompatActivity() {
+class SerializedActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_serialized)
