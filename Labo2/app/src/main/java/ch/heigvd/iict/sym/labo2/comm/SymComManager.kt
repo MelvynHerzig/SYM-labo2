@@ -1,124 +1,128 @@
+/**
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
+ */
+
 package ch.heigvd.iict.sym.labo2.comm
 
-import android.os.Handler
-import android.os.Looper
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
-import java.io.BufferedReader
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.InputStreamReader
-import java.lang.Exception
 import java.lang.ref.WeakReference
-import java.net.HttpURLConnection
-import java.net.URL
-import java.nio.charset.StandardCharsets
+import java.util.*
 
-// Spécification du content type
+
+/**
+ * Spécification du content type
+ */
 enum class ContentType(val value: String) {
     TEXT("text/plain"), JSON("application/json")
 }
 
-// Spécification de la méthode
+/**
+ * Spécification de la méthode
+ */
 enum class RequestMethod(val value: String) {
     GET("GET"), POST("POST")
 }
 
 /**
- * Classe responsable d'effectuer des requêtes asynchrones au serveur.
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
+ * Classe responsable de gérer la communication avec le thread de communication SymComThead
+ * @param communicationEventListener Callback à utiliser quand une requête est traitée.
  */
-class SymComManager(var mCommunicationEventListener: CommunicationEventListener) {
+class SymComManager(context: Context, communicationEventListener: CommunicationEventListener) {
+
+    // Listener à notifier lors de réception d'une réponse
+    private var mCommunicationEventListener: WeakReference<CommunicationEventListener>
+
+    // Context d'exécution pour récupération de l'état de la connexion
+    private var mContext: WeakReference<Context>
+
+    // Liste des requête en attente de traitement
+    private var mQueue: MutableList<SymComRequest>
+
+    // Timer pour exécution récurrente des requête en cache.
+    private var mTimer: Timer = Timer()
+
+    init {
+        mCommunicationEventListener = WeakReference(communicationEventListener)
+        mContext = WeakReference(context)
+        mQueue   = mutableListOf()
+
+        // Toutes les 10s, si internet disponible, envoyer les requêtes en cache.
+        mTimer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                while (!mQueue.isEmpty() && checkForInternet()) {
+                    sendRequest(mQueue.removeAt(0))
+                }
+            }
+        }, 0, 10000)
+    }
 
     /**
      * Permet d'envoyer une requête au serveur
      */
-    fun sendRequest( url: String,
-                     request: String,
-                     contentType: ContentType,
-                     requestMethod: RequestMethod
-    ) {
+    fun sendRequest( request: SymComRequest ) {
 
-        // Préparation du runnable
-        var symComRunnable = SymComRunnable(url,
-                                            request,
-                                            contentType,
-                                            requestMethod,
-                                            mCommunicationEventListener)
 
-        // Lancement du thread
-        Thread(symComRunnable).start()
+        if(checkForInternet()) {
+            // Démarrage transmission
+            SymComThread(mCommunicationEventListener, request).start()
+        } else {
+            mQueue.add(request)
+        }
     }
 
     /**
-     * Classe interne sans référence sur la classe mère pour l'exécution de communication.
-     * @param url Serveur sur lequel se connecter.
-     * @param request Contenu.
-     * @param contentType Type de contenu (en header http)
-     * @param requestMethod type de requête http.
-     * @param listener Listener à notifier une fois la réponse reçue.
+     * Vérifie la connectivité du réseau.
+     * Source: https://www.geeksforgeeks.org/how-to-check-internet-connection-in-kotlin/
+     * @return Vrai si le réseau est disponible sinon faux.
      */
-    private class SymComRunnable(url          : String,
-                                 request      : String,
-                                 contentType  : ContentType,
-                                 requestMethod: RequestMethod,
-                                 listener     : CommunicationEventListener) : Runnable {
+    private fun checkForInternet(): Boolean {
 
-        private var mUrl           : String = url
-        private var mRequest       : String = request
-        private var mContentType   : ContentType = contentType
-        private var mRequestMethod : RequestMethod = requestMethod
-        private var mListener: WeakReference<CommunicationEventListener> = WeakReference(listener)
+        val context = mContext.get()
 
-        override fun run() {
+        // register activity with the connectivity manager service
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-            val handler = Handler(Looper.getMainLooper())
-            val connection = URL(mUrl).openConnection() as HttpURLConnection
+        // if the android version is equal to M or greater we need to use the
+        // NetworkCapabilities to check what type of network has the internet connection
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            connection.connectTimeout = 300000
+            // Returns a Network object corresponding to the currently active default data network.
+            val network = connectivityManager.activeNetwork ?: return false
 
-            try {
-                val postData = mRequest.toByteArray(StandardCharsets.UTF_8)
+            // Representation of the capabilities of an active network.
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
 
-                connection.requestMethod = mRequestMethod.value
-                connection.doOutput = mRequestMethod != RequestMethod.GET
-                connection.setRequestProperty("charset", "utf-8")
-                connection.setRequestProperty("Content-length", postData.size.toString())
-                connection.setRequestProperty("Content-Type", mContentType.value)
+            return when {
+                // Indicates this network uses a Wi-Fi transport, or WiFi has network connectivity
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
 
+                // Indicates this network uses a Cellular transport or Cellular has network connectivity
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
 
-                try {
-                    val outputStream = DataOutputStream(connection.outputStream)
-                    outputStream.write(postData)
-                    outputStream.flush()
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                }
-
-                try {
-                    val inputstream = DataInputStream(connection.inputStream)
-                    val reader = BufferedReader(InputStreamReader(inputstream))
-
-                    val response = reader.readLine()
-
-                    // Pause volontaire pour simuler une requête "longue"
-                    SystemClock.sleep(20000)
-
-                    handler.post {
-                        mListener.get()?.handleServerResponse(response)
-                    }
-
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                connection.disconnect()
+                // else return false
+                else -> false
             }
+        } else {
+            // if the android version is below M
+            @Suppress("DEPRECATION") val networkInfo =
+                connectivityManager.activeNetworkInfo ?: return false
+            @Suppress("DEPRECATION")
+            return networkInfo.isConnected
         }
+    }
+
+    /**
+     * Quitte le symComManager et abandonne les requêtes cachées.
+     */
+    fun quit() {
+        mTimer.cancel()
     }
 }
