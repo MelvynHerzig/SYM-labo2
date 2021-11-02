@@ -44,7 +44,8 @@ class AsyncActivity : BaseActivity() {
         sendButton = findViewById(R.id.async_btn_send)
         responseField = findViewById(R.id.async_response_field)
 
-        symComManager = SymComManager(this, object : CommunicationEventListener {
+        symComManager = SymComManager(this)
+        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
                 responseField.text = response
             }
