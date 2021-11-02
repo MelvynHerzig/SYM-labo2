@@ -10,8 +10,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.os.SystemClock
-import android.util.Log
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.lang.ref.WeakReference
 import java.util.*
@@ -43,10 +41,10 @@ class SymComManager(context: Context, communicationEventListener: CommunicationE
     // Context d'exécution pour récupération de l'état de la connexion
     private var mContext: WeakReference<Context>
 
-    // Liste des requête en attente de traitement
+    // Liste des requêtes en attente de traitement
     private var mQueue: MutableList<SymComRequest>
 
-    // Timer pour exécution récurrente des requête en cache.
+    // Timer pour exécution récurrente des requêtes en cache.
     private var mTimer: Timer = Timer()
 
     init {
