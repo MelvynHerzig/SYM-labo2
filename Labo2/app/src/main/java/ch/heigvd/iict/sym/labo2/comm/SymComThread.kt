@@ -36,7 +36,7 @@ class SymComThread(val listener : WeakReference<CommunicationEventListener>,
         connection.connectTimeout = 300000
 
         try {
-            val postData = request.body.toByteArray(StandardCharsets.UTF_8)
+            val postData = request.getBytesFromBody()
 
             connection.requestMethod = request.requestMethod.value
             connection.doOutput = request.requestMethod != RequestMethod.GET

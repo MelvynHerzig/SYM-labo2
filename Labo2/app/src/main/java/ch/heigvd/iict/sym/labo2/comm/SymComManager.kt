@@ -19,7 +19,7 @@ import java.util.*
  * Spécification du content type
  */
 enum class ContentType(val value: String) {
-    TEXT("text/plain"), JSON("application/json")
+    TEXT("text/plain"), JSON("application/json"), PROTOBUF("application/protobuf")
 }
 
 /**
