@@ -64,7 +64,8 @@ class SerializedActivity : BaseActivity() {
         sendButton = findViewById(R.id.serialize_btn_send)
         responseField = findViewById(R.id.serialize_response_field)
 
-        symComManager = SymComManager(this, object : CommunicationEventListener {
+        symComManager = SymComManager(this)
+        symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
                 //responseField.text = Gson().fromJson(response, Person::class.java).toString()
             }

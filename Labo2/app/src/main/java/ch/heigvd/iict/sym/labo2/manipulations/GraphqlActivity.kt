@@ -12,13 +12,10 @@ import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
-import ch.heigvd.iict.sym.labo2.comm.SymComManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import ch.heigvd.iict.sym.labo2.comm.ContentType
-import ch.heigvd.iict.sym.labo2.comm.RequestMethod
-import ch.heigvd.iict.sym.labo2.comm.SymComRequest
+import ch.heigvd.iict.sym.labo2.comm.*
 import ch.heigvd.iict.sym.labo2.manipulations.adapter.BookListAdapter
 import ch.heigvd.iict.sym.labo2.models.Author
 import ch.heigvd.iict.sym.labo2.models.Book
@@ -80,7 +77,6 @@ class GraphqlActivity : BaseActivity() {
         // Notification du démarrage
         Toast.makeText(applicationContext, getString(R.string.str_authors_loading), Toast.LENGTH_SHORT).show()
 
-
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
 
@@ -111,7 +107,7 @@ class GraphqlActivity : BaseActivity() {
             }
         })
         // Envoie de la demande des autheurs
-        symComManager.sendRequest(SymComRequest("http://mobile.iict.ch/graphql", "{\"query\":\"{findAllAuthors{id, name}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\":\"{findAllAuthors{id, name}}\"}", ContentType.JSON, RequestMethod.POST))
     }
 
     /**
@@ -146,6 +142,6 @@ class GraphqlActivity : BaseActivity() {
         })
 
         // Envoie de la demande des livres
-        symComManager.sendRequest(SymComRequest("http://mobile.iict.ch/graphql", "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}", ContentType.JSON, RequestMethod.POST))
     }
 }
