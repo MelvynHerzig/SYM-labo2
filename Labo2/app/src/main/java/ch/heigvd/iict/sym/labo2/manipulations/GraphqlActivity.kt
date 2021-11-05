@@ -18,7 +18,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
-import ch.heigvd.iict.sym.labo2.comm.SymComRequest
+import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
 import ch.heigvd.iict.sym.labo2.manipulations.adapter.BookListAdapter
 import ch.heigvd.iict.sym.labo2.models.Author
 import ch.heigvd.iict.sym.labo2.models.Book
@@ -109,9 +109,12 @@ class GraphqlActivity : BaseActivity() {
                 // Notification opération terminée.
                 Toast.makeText(applicationContext, getString(R.string.str_authors_loaded), Toast.LENGTH_SHORT).show()
             }
+            override fun handleServerResponse(response: ByteArray) {
+                throw Exception("Impossible to read ByteArray")
+            }
         })
         // Envoie de la demande des autheurs
-        symComManager.sendRequest(SymComRequest("http://mobile.iict.ch/graphql", "{\"query\":\"{findAllAuthors{id, name}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\":\"{findAllAuthors{id, name}}\"}", ContentType.JSON, RequestMethod.POST))
     }
 
     /**
@@ -143,9 +146,12 @@ class GraphqlActivity : BaseActivity() {
                 responseField.adapter = adapter
                 responseField.layoutManager = LinearLayoutManager(this@GraphqlActivity)
             }
+            override fun handleServerResponse(response: ByteArray) {
+                throw Exception("Impossible to read ByteArray")
+            }
         })
 
         // Envoie de la demande des livres
-        symComManager.sendRequest(SymComRequest("http://mobile.iict.ch/graphql", "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}", ContentType.JSON, RequestMethod.POST))
     }
 }

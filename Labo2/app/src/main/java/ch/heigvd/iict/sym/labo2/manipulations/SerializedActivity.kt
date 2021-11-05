@@ -79,7 +79,8 @@ class SerializedActivity : BaseActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         authorSpinner.setAdapter(adapter)*/
 
-        symComManager = SymComManager(this, object : CommunicationEventListener {
+        symComManager = SymComManager(this)
+        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
                 responseField.text = Person.parsingProtobufByteArrayData(response)
             }
