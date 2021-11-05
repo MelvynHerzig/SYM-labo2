@@ -7,6 +7,7 @@ import android.widget.Button
 import ch.heigvd.iict.sym.labo2.manipulations.AsyncActivity
 import ch.heigvd.iict.sym.labo2.manipulations.DelayedActivity
 import ch.heigvd.iict.sym.labo2.manipulations.GraphqlActivity
+import ch.heigvd.iict.sym.labo2.manipulations.SerializedActivity
 
 /**
  * Activité principale permettant de lancer les 5 activités
@@ -54,11 +55,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         serializedButton.setOnClickListener{
-            //startActivity(Intent(this, AsyncActivity::class.java))
+            startActivity(Intent(this, SerializedActivity::class.java))
         }
 
         compressedButton.setOnClickListener{
-            //startActivity(Intent(this, AsyncActivity::class.java))
+            //startActivity(Intent(this, CompressedActivity::class.java))
         }
 
         graphqlButton.setOnClickListener{

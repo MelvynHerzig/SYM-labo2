@@ -1,3 +1,9 @@
+/**
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
+ */
+
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
@@ -10,16 +16,13 @@ import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
-import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
 import ch.heigvd.iict.sym.labo2.comm.SymComBytesRequest
 import ch.heigvd.iict.sym.labo2.models.Person
 import ch.heigvd.iict.sym.labo2.models.Phone
 
 /**
  * Activité implémentant le protocole de communication sérialisé.
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
+ * Les protocoles pouvant être utiliser sont JSON, XML et Protocol Buffer
  */
 class SerializedActivity : BaseActivity() {
 
@@ -50,6 +53,11 @@ class SerializedActivity : BaseActivity() {
     // Référence sur le champ d'affichage de la réponse.
     private lateinit var responseField: TextView
 
+    /**
+     * À la création de l'activité.
+     * Attachement des éléments graphiques
+     * Création de listener sur les réponses du serveur
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_serialized)
@@ -64,9 +72,19 @@ class SerializedActivity : BaseActivity() {
         sendButton = findViewById(R.id.serialize_btn_send)
         responseField = findViewById(R.id.serialize_response_field)
 
+        // Adaptation de la liste d'autheurs
+        /*val adapter: ArrayAdapter<Author> = ArrayAdapter(this@SerializedActivity,
+            android.R.layout.simple_list_item_1,
+            authorsList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        authorSpinner.setAdapter(adapter)*/
+
         symComManager = SymComManager(this, object : CommunicationEventListener {
+            override fun handleServerResponse(response: ByteArray) {
+                responseField.text = Person.parsingProtobufByteArrayData(response)
+            }
             override fun handleServerResponse(response: String) {
-                //responseField.text = Gson().fromJson(response, Person::class.java).toString()
+                responseField.text = response
             }
         })
 
@@ -82,6 +100,10 @@ class SerializedActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Construit une requête en fonction des valeurs du formulaire
+     * Puis envoie cette dernière au serveur avec le Protocol Buffer
+     */
     private fun sendProtobuf() {
         val phoneHome = Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME)
         val phoneMobile = Phone(phonenumberInputHome.text.toString(), Phone.Type.MOBILE)
@@ -93,7 +115,7 @@ class SerializedActivity : BaseActivity() {
             mutableListOf(phoneHome, phoneMobile, phoneWork))
 
         symComManager.sendRequest( SymComBytesRequest("http://mobile.iict.ch/api/protobuf",
-            person.createSendingData(),
+            person.creatingByteArrayForProtobufData(),
             ContentType.PROTOBUF,
             RequestMethod.POST))
     }

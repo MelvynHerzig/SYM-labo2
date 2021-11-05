@@ -54,6 +54,9 @@ class DelayedActivity : BaseActivity() {
                     "${responseField.text}\n------\n$response".also { responseField.text = it }
                 }
             }
+            override fun handleServerResponse(response: ByteArray) {
+                throw Exception("Impossible to read ByteArray")
+            }
         })
 
         sendButton.setOnClickListener {

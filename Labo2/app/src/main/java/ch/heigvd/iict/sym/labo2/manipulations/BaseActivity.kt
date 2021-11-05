@@ -6,9 +6,6 @@
 
 package ch.heigvd.iict.sym.labo2.manipulations
 
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 
@@ -16,8 +13,6 @@ import ch.heigvd.iict.sym.labo2.comm.SymComManager
  * Activité de base pour notre programme définissant les méthodes communes éléments communs.
  */
 abstract class BaseActivity : AppCompatActivity() {
-
-
 
     // Référence sur le gestionnaire de communication.
     protected lateinit var symComManager: SymComManager
