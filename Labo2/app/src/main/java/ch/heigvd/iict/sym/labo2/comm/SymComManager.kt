@@ -31,24 +31,24 @@ enum class RequestMethod(val value: String) {
 
 /**
  * Classe responsable de gérer la communication avec le thread de communication SymComThead
- * @param communicationEventListener Callback à utiliser quand une requête est traitée.
+ * @param context Contexte de l'activité executant le manager pour récupérer l'état de la connexion.
  */
-class SymComManager(context: Context, communicationEventListener: CommunicationEventListener) {
+class SymComManager(context: Context) {
 
     // Listener à notifier lors de réception d'une réponse
-    private var mCommunicationEventListener: WeakReference<CommunicationEventListener>
+    private var mCommunicationEventListener: WeakReference<CommunicationEventListener>?
 
     // Context d'exécution pour récupération de l'état de la connexion
     private var mContext: WeakReference<Context>
 
     // Liste des requêtes en attente de traitement
-    private var mQueue: MutableList<SymComRequest>
+    private var mQueue: MutableList<Pair<SymComRequest, WeakReference<CommunicationEventListener>>>
 
     // Timer pour exécution récurrente des requêtes en cache.
     private var mTimer: Timer = Timer()
 
     init {
-        mCommunicationEventListener = WeakReference(communicationEventListener)
+        mCommunicationEventListener = null
         mContext = WeakReference(context)
         mQueue   = mutableListOf()
 
@@ -56,10 +56,18 @@ class SymComManager(context: Context, communicationEventListener: CommunicationE
         mTimer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 while (!mQueue.isEmpty() && checkForInternet()) {
-                    sendRequest(mQueue.removeAt(0))
+                    val pair = mQueue.removeAt(0)
+                    sendRequestDirect(pair.first, pair.second)
                 }
             }
         }, 0, 10000)
+    }
+
+    /**
+     * Set le listener qui sera utilisé pour les requêtes suivantes.
+     */
+    fun setCommunicationEventListener(communicationEventListener: CommunicationEventListener) {
+        mCommunicationEventListener = WeakReference(communicationEventListener)
     }
 
     /**
@@ -67,13 +75,21 @@ class SymComManager(context: Context, communicationEventListener: CommunicationE
      */
     fun sendRequest( request: SymComRequest ) {
 
-
-        if(checkForInternet()) {
+        if(mCommunicationEventListener != null && checkForInternet()) {
             // Démarrage transmission
             SymComThread(mCommunicationEventListener, request).start()
         } else {
-            mQueue.add(request)
+            mQueue.add(Pair(request, mCommunicationEventListener as WeakReference<CommunicationEventListener>))
         }
+    }
+
+    /**
+     * Créer un thread de communication sans vérifier la connexion.
+     * Utilisé depuis le timer qui vérifie au préalable la connexion.
+     */
+    private fun sendRequestDirect( request: SymComRequest, listener: WeakReference<CommunicationEventListener>) {
+
+        SymComThread(listener, request).start()
     }
 
     /**

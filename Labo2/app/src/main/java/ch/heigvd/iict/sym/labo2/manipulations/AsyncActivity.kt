@@ -27,7 +27,7 @@ class AsyncActivity : BaseActivity() {
     // Référence sur le champ input de l'utilisateur.
     protected lateinit var userInput: EditText
 
-    // Référence sur le bouton d'annulation.
+    // Référence sur le bouton d'envoi.
     protected lateinit var sendButton: Button
 
     // Référence sur le champ d'affichage de la réponse.
@@ -47,7 +47,8 @@ class AsyncActivity : BaseActivity() {
         sendButton = findViewById(R.id.async_btn_send)
         responseField = findViewById(R.id.async_response_field)
 
-        symComManager = SymComManager(this, object : CommunicationEventListener {
+        symComManager = SymComManager(this)
+        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
                 responseField.text = response
             }

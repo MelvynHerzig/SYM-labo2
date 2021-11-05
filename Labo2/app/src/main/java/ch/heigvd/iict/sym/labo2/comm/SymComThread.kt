@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets
  * @param listener Méthode à appeler une fois la réponse reçue
  * @param request Requête à transmettre
  */
-class SymComThread(val listener : WeakReference<CommunicationEventListener>,
+class SymComThread(val listener : WeakReference<CommunicationEventListener>?,
                    val request  : SymComRequest) : Thread() {
 
     /**
@@ -63,7 +63,7 @@ class SymComThread(val listener : WeakReference<CommunicationEventListener>,
                 SystemClock.sleep(2000)
 
                 Handler(Looper.getMainLooper()).post {
-                    listener.get()?.handleServerResponse(response)
+                    listener?.get()?.handleServerResponse(response)
                 }
 
             } catch (exception: Exception) {
