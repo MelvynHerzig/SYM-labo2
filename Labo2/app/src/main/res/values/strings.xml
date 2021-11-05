@@ -12,4 +12,6 @@
     <string name="str_waiting_server">Waiting for server response...</string>
     <string name="str_authors">Authors</string>
     <string name="str_books">Books</string>
+    <string name="str_authors_loading">Authors loading</string>
+    <string name="str_authors_loaded">Authors loaded</string>
 </resources>
