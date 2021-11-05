@@ -63,7 +63,7 @@ class SymComThread(val listener : WeakReference<CommunicationEventListener>?,
                 SystemClock.sleep(2000)
 
                 Handler(Looper.getMainLooper()).post {
-                    listener?.get()?.handleServerResponse(response)
+                    listener?.get()?.handleServerResponse(response!!)
                 }
 
             } catch (exception: Exception) {

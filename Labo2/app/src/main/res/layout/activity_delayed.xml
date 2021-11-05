@@ -45,8 +45,7 @@
             android:id="@+id/delayed_response_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/app_vertical_separation"
-            android:text="@string/str_none" />
+            android:layout_marginTop="@dimen/app_vertical_separation"/>
 
     </LinearLayout>
 
