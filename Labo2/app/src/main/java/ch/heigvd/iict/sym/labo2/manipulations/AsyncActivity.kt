@@ -15,7 +15,7 @@ import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
-import ch.heigvd.iict.sym.labo2.comm.SymComRequest
+import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
 
 /**
  * Activité implémentant le protocole de communication asynchrone.
@@ -53,7 +53,7 @@ class AsyncActivity : BaseActivity() {
         sendButton.setOnClickListener {
 
             responseField.text = getString(R.string.str_waiting_server)
-            symComManager.sendRequest( SymComRequest("http://mobile.iict.ch/api/txt",
+            symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
                                                      userInput.text.toString(),
                                                      ContentType.TEXT,
                                                      RequestMethod.POST))

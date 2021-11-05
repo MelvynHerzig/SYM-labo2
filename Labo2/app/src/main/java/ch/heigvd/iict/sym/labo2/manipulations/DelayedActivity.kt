@@ -12,10 +12,7 @@ import android.widget.EditText
 import android.widget.TextView
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
-import ch.heigvd.iict.sym.labo2.comm.ContentType
-import ch.heigvd.iict.sym.labo2.comm.RequestMethod
-import ch.heigvd.iict.sym.labo2.comm.SymComManager
-import ch.heigvd.iict.sym.labo2.comm.SymComRequest
+import ch.heigvd.iict.sym.labo2.comm.*
 
 /**
  * Activité implémentant le protocole de communication retardé.
@@ -64,7 +61,7 @@ class DelayedActivity : BaseActivity() {
 
             responseField.text = getString(R.string.str_waiting_server)
             symComManager.sendRequest(
-                SymComRequest(
+                SymComStringRequest(
                     "http://mobile.iict.ch/api/txt",
                     userInput.text.toString(),
                     ContentType.TEXT,

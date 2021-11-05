@@ -11,4 +11,85 @@
     tools:context=".manipulations.SerializedActivity"
     >
 
+    <LinearLayout
+        android:id="@+id/serialize_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/serialize_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_enter_name"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/serialize_firstname_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_enter_firstname"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/serialize_middlename_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_enter_middlename"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/serialize_phone_number_input_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_enter_phone_number"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/serialize_phone_number_input_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_enter_phone_number"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/serialize_phone_number_input_work"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_enter_phone_number"
+            android:inputType="phone" />
+
+
+        <Spinner
+            android:id="@+id/serialize_spinner_request_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/serialize_btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/str_send" />
+
+        <TextView
+            android:id="@+id/serialize_response_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/str_response_title" />
+
+        <TextView
+            android:id="@+id/serialize_response_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_vertical_separation"
+            android:text="@string/str_none" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
