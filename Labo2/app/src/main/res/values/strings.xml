@@ -12,8 +12,13 @@
     <string name="str_waiting_server">Waiting for server response...</string>
     <string name="str_authors">Authors</string>
     <string name="str_books">Books</string>
+
     <string name="str_enter_name">Enter your name</string>
     <string name="str_enter_firstname">Enter your firstname</string>
     <string name="str_enter_middlename">Enter your middlename</string>
     <string name="str_enter_phone_number">Enter your phone number</string>
+  
+    <string name="str_authors_loading">Authors loading</string>
+    <string name="str_authors_loaded">Authors loaded</string>
+
 </resources>
