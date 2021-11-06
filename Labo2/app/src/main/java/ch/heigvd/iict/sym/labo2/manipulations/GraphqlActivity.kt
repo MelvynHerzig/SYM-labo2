@@ -105,6 +105,9 @@ class GraphqlActivity : BaseActivity() {
                 // Notification opération terminée.
                 Toast.makeText(applicationContext, getString(R.string.str_authors_loaded), Toast.LENGTH_SHORT).show()
             }
+            override fun handleServerResponse(response: ByteArray) {
+                throw Exception("Impossible to read ByteArray")
+            }
         })
         // Envoie de la demande des autheurs
         symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\":\"{findAllAuthors{id, name}}\"}", ContentType.JSON, RequestMethod.POST))
@@ -138,6 +141,9 @@ class GraphqlActivity : BaseActivity() {
                 val adapter = BookListAdapter(bookList)
                 responseField.adapter = adapter
                 responseField.layoutManager = LinearLayoutManager(this@GraphqlActivity)
+            }
+            override fun handleServerResponse(response: ByteArray) {
+                throw Exception("Impossible to read ByteArray")
             }
         })
 

@@ -6,9 +6,6 @@
 
 package ch.heigvd.iict.sym.labo2.manipulations
 
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 

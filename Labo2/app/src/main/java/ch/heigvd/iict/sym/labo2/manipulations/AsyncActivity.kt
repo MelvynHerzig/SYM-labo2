@@ -16,6 +16,8 @@ import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
+import ch.heigvd.iict.sym.labo2.models.Person
+import java.lang.Error
 
 /**
  * Activité implémentant le protocole de communication asynchrone.
@@ -32,7 +34,9 @@ class AsyncActivity : BaseActivity() {
     protected lateinit var responseField: TextView
 
     /**
+     * À la création de l'activité.
      * Attachement des éléments graphiques
+     * Création de listener sur les réponses du serveur
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +51,9 @@ class AsyncActivity : BaseActivity() {
         symComManager.setCommunicationEventListener( object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
                 responseField.text = response
+            }
+            override fun handleServerResponse(response: ByteArray) {
+                throw Exception("Impossible to read ByteArray")
             }
         })
 

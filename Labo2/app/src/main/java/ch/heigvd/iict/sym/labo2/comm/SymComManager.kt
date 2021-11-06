@@ -11,6 +11,31 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 /**
+ * Spécification du content type
+ */
+enum class ContentType(val value: String) {
+    TEXT("text/plain"), JSON("application/json"), XML("application/xml"), PROTOBUF("application/protobuf");
+
+    private lateinit var type: String
+
+    private fun ContentType(type: String) {
+        this.type = type
+    }
+
+    override fun toString(): String {
+        return type
+    }
+}
+
+/**
+ * Spécification de la méthode
+ */
+enum class RequestMethod(val value: String) {
+    GET("GET"), POST("POST")
+}
+
+
+/**
  * Classe responsable de gérer la communication avec le thread de communication SymComThead
  * @param context Contexte de l'activité executant le manager pour récupérer l'état de la connexion.
  * @param debug Par défaut faux, si vrai notifie le communication event listener lorsque la requête
