@@ -17,8 +17,6 @@ import ch.heigvd.iict.sym.labo2.comm.SymComManager
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-
-
     // Référence sur le gestionnaire de communication.
     protected lateinit var symComManager: SymComManager
 
@@ -29,5 +27,4 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onDestroy()
         symComManager.quit()
     }
-
 }

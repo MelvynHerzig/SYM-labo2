@@ -1,20 +1,15 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.comm
-
-import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
-import java.lang.ref.WeakReference
 
 /**
  * Classe modélisant une requête transmissible au SymComManager
- */
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
+*/
+
 abstract class SymComRequest (val url : String,
-                          val contentType : ContentType,
-                          val requestMethod: RequestMethod) {
+                              val contentType : ContentType,
+                              val requestMethod: RequestMethod) {
 
     abstract fun getBytesFromBody() : ByteArray
 
@@ -39,4 +34,18 @@ abstract class SymComRequest (val url : String,
            return counter++
         }
     }
+}
+
+/**
+ * Spécification du content type
+ */
+enum class ContentType(val value: String) {
+    TEXT("text/plain"), JSON("application/json"), PROTOBUF("application/protobuf")
+}
+
+/**
+ * Spécification de la méthode
+ */
+enum class RequestMethod(val value: String) {
+    GET("GET"), POST("POST")
 }

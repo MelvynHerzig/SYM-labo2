@@ -1,9 +1,3 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.comm
 
 import android.content.Context
@@ -16,26 +10,16 @@ import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.lang.ref.WeakReference
 import java.util.*
 
-
-/**
- * Spécification du content type
- */
-enum class ContentType(val value: String) {
-    TEXT("text/plain"), JSON("application/json"), PROTOBUF("application/protobuf")
-}
-
-/**
- * Spécification de la méthode
- */
-enum class RequestMethod(val value: String) {
-    GET("GET"), POST("POST")
-}
-
 /**
  * Classe responsable de gérer la communication avec le thread de communication SymComThead
  * @param context Contexte de l'activité executant le manager pour récupérer l'état de la connexion.
+ * @param debug Par défaut faux, si vrai notifie le communication event listener lorsque la requête
+ * est mise en attente ou traitée.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
-class SymComManager(context: Context, val debug: Boolean = false) {
+class SymComManager(context: Context, private val debug: Boolean = false) {
 
     // Listener à notifier lors de réception d'une réponse
     private var mCommunicationEventListener: WeakReference<CommunicationEventListener>?
@@ -44,7 +28,7 @@ class SymComManager(context: Context, val debug: Boolean = false) {
     private var mContext: WeakReference<Context>
 
     // Liste des requêtes en attente de traitement
-    private var mQueue: MutableList<Pair<SymComRequest, WeakReference<CommunicationEventListener>>>
+    private var mQueue: Queue<Pair<SymComRequest, WeakReference<CommunicationEventListener>>>
 
     // Timer pour exécution récurrente des requêtes en cache.
     private var mTimer: Timer = Timer()
@@ -52,13 +36,13 @@ class SymComManager(context: Context, val debug: Boolean = false) {
     init {
         mCommunicationEventListener = null
         mContext = WeakReference(context)
-        mQueue   = mutableListOf()
+        mQueue   = LinkedList(listOf())
 
         // Toutes les 10s, si internet disponible, envoyer les requêtes en cache.
         mTimer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                while (!mQueue.isEmpty() && checkForInternet()) {
-                    val pair = mQueue.removeAt(0)
+                while (mQueue.isNotEmpty() && checkForInternet()) {
+                    val pair = mQueue.remove()
                     sendRequestDirect(pair.first, pair.second)
                 }
             }
@@ -79,10 +63,10 @@ class SymComManager(context: Context, val debug: Boolean = false) {
 
         if(mCommunicationEventListener != null && checkForInternet()) {
             // Démarrage transmission
-            sendRequestDirect(request, WeakReference(mCommunicationEventListener?.get()))
+            mCommunicationEventListener?.let { sendRequestDirect(request, it) }
         } else {
-            responseIfDebug("Queued ${request.toString()}", WeakReference(mCommunicationEventListener?.get()))
-            mQueue.add(Pair(request, WeakReference(mCommunicationEventListener?.get())))
+            mCommunicationEventListener?.let { responseIfDebug("Queued $request", it) }
+            mCommunicationEventListener?.let { mQueue.add(Pair(request, it)) }
         }
     }
 
@@ -90,10 +74,11 @@ class SymComManager(context: Context, val debug: Boolean = false) {
      * Créer un thread de communication sans vérifier la connexion.
      * Utilisé depuis le timer qui vérifie au préalable la connexion.
      */
-    private fun sendRequestDirect( request: SymComRequest, listener: WeakReference<CommunicationEventListener>) {
+    private fun sendRequestDirect( request: SymComRequest, weakListener: WeakReference<CommunicationEventListener>) {
 
-        responseIfDebug("Sending ${request}", mCommunicationEventListener!!)
-        SymComThread(listener, request).start()
+        mCommunicationEventListener?.let { responseIfDebug("Sending $request", it )}
+        SymComThread(weakListener, request).start()
+
     }
 
     /**
