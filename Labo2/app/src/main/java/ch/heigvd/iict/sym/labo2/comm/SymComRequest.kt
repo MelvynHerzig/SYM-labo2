@@ -40,7 +40,17 @@ abstract class SymComRequest (val url : String,
  * Spécification du content type
  */
 enum class ContentType(val value: String) {
-    TEXT("text/plain"), JSON("application/json"), PROTOBUF("application/protobuf")
+    TEXT("text/plain"), JSON("application/json"), XML("application/xml"), PROTOBUF("application/protobuf");
+
+    private lateinit var type: String
+
+    private fun ContentType(type: String) {
+        this.type = type
+    }
+
+    override fun toString(): String {
+        return type
+    }
 }
 
 /**
