@@ -24,5 +24,4 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onDestroy()
         symComManager.quit()
     }
-
 }

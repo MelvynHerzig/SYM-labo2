@@ -1,13 +1,7 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
 package ch.heigvd.iict.sym.labo2.comm
 
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.io.BufferedReader
 import java.io.DataInputStream
@@ -16,15 +10,27 @@ import java.io.InputStreamReader
 import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.charset.StandardCharsets
 
 /**
  * Classe implémentant un thread de communication http pour le SymComManager
  * @param listener Méthode à appeler une fois la réponse reçue
  * @param request Requête à transmettre
- */
-class SymComThread(val listener : WeakReference<CommunicationEventListener>?,
-                   val request  : SymComRequest) : Thread() {
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
+*/
+class SymComThread(private val listener : WeakReference<CommunicationEventListener>, private val request  : SymComRequest) : Thread() {
+
+    /**
+     * Classe interne "statique" pour permettre la libération du SymComThread
+     * dès que le post sur le handler a été effectué sans pour autant avoir été traité
+     */
+    class ResponseRunnable(private val listener: WeakReference<CommunicationEventListener>, val response: String) : Runnable {
+
+        override fun run() {
+            listener.get()?.handleServerResponse(response)
+        }
+    }
 
     /**
      * Exécution
@@ -59,12 +65,7 @@ class SymComThread(val listener : WeakReference<CommunicationEventListener>?,
 
                 val response = reader.readLine()
 
-                // Pause volontaire pour simuler une requête "longue"
-                SystemClock.sleep(2000)
-
-                Handler(Looper.getMainLooper()).post {
-                    listener?.get()?.handleServerResponse(response)
-                }
+                Handler(Looper.getMainLooper()).post(ResponseRunnable(listener, response))
 
             } catch (exception: Exception) {
                 exception.printStackTrace()

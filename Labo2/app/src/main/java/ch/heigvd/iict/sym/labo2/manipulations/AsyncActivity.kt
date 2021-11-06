@@ -58,12 +58,14 @@ class AsyncActivity : BaseActivity() {
         })
 
         sendButton.setOnClickListener {
-
+            if(userInput.text.toString() == "") {
+                return@setOnClickListener
+            }
             responseField.text = getString(R.string.str_waiting_server)
             symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
-                                                     userInput.text.toString(),
-                                                     ContentType.TEXT,
-                                                     RequestMethod.POST))
+                    userInput.text.toString(),
+                    ContentType.TEXT,
+                    RequestMethod.POST))
         }
     }
 }

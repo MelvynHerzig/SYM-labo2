@@ -35,24 +35,19 @@ class DelayedActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_delayed)
 
-
         // Liaison des éléments graphiques.
         userInput = findViewById(R.id.delayed_user_input)
         sendButton = findViewById(R.id.delayed_btn_send)
         responseField = findViewById(R.id.delayed_response_field)
 
-        symComManager = SymComManager(this)
+        symComManager = SymComManager(this, true)
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
-
-                if (responseField.text == getString(R.string.str_waiting_server)) {
-                    responseField.text = ""
-                }
 
                 if (responseField.text == "") {
                     responseField.text = response
                 } else {
-                    "${responseField.text}\n------\n$response".also { responseField.text = it }
+                    "$response\n------\n${responseField.text}".also { responseField.text = it }
                 }
             }
             override fun handleServerResponse(response: ByteArray) {
@@ -62,7 +57,10 @@ class DelayedActivity : BaseActivity() {
 
         sendButton.setOnClickListener {
 
-            responseField.text = getString(R.string.str_waiting_server)
+            if(userInput.text.toString() == "") {
+                return@setOnClickListener
+            }
+
             symComManager.sendRequest(
                 SymComStringRequest(
                     "http://mobile.iict.ch/api/txt",

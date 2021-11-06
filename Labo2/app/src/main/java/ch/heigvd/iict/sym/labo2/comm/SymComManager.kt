@@ -1,19 +1,14 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.comm
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.lang.ref.WeakReference
 import java.util.*
-
 
 /**
  * Spécification du content type
@@ -39,11 +34,17 @@ enum class RequestMethod(val value: String) {
     GET("GET"), POST("POST")
 }
 
+
 /**
  * Classe responsable de gérer la communication avec le thread de communication SymComThead
  * @param context Contexte de l'activité executant le manager pour récupérer l'état de la connexion.
+ * @param debug Par défaut faux, si vrai notifie le communication event listener lorsque la requête
+ * est mise en attente ou traitée.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
-class SymComManager(context: Context) {
+class SymComManager(context: Context, private val debug: Boolean = false) {
 
     // Listener à notifier lors de réception d'une réponse
     private var mCommunicationEventListener: WeakReference<CommunicationEventListener>?
@@ -52,7 +53,7 @@ class SymComManager(context: Context) {
     private var mContext: WeakReference<Context>
 
     // Liste des requêtes en attente de traitement
-    private var mQueue: MutableList<Pair<SymComRequest, WeakReference<CommunicationEventListener>>>
+    private var mQueue: Queue<Pair<SymComRequest, WeakReference<CommunicationEventListener>>>
 
     // Timer pour exécution récurrente des requêtes en cache.
     private var mTimer: Timer = Timer()
@@ -60,13 +61,13 @@ class SymComManager(context: Context) {
     init {
         mCommunicationEventListener = null
         mContext = WeakReference(context)
-        mQueue   = mutableListOf()
+        mQueue   = LinkedList(listOf())
 
         // Toutes les 10s, si internet disponible, envoyer les requêtes en cache.
         mTimer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                while (!mQueue.isEmpty() && checkForInternet()) {
-                    val pair = mQueue.removeAt(0)
+                while (mQueue.isNotEmpty() && checkForInternet()) {
+                    val pair = mQueue.remove()
                     sendRequestDirect(pair.first, pair.second)
                 }
             }
@@ -87,9 +88,10 @@ class SymComManager(context: Context) {
 
         if(mCommunicationEventListener != null && checkForInternet()) {
             // Démarrage transmission
-            SymComThread(mCommunicationEventListener, request).start()
+            mCommunicationEventListener?.let { sendRequestDirect(request, it) }
         } else {
-            mQueue.add(Pair(request, mCommunicationEventListener as WeakReference<CommunicationEventListener>))
+            mCommunicationEventListener?.let { responseIfDebug("Queued $request", it) }
+            mCommunicationEventListener?.let { mQueue.add(Pair(request, it)) }
         }
     }
 
@@ -97,9 +99,11 @@ class SymComManager(context: Context) {
      * Créer un thread de communication sans vérifier la connexion.
      * Utilisé depuis le timer qui vérifie au préalable la connexion.
      */
-    private fun sendRequestDirect( request: SymComRequest, listener: WeakReference<CommunicationEventListener>) {
+    private fun sendRequestDirect( request: SymComRequest, weakListener: WeakReference<CommunicationEventListener>) {
 
-        SymComThread(listener, request).start()
+        mCommunicationEventListener?.let { responseIfDebug("Sending $request", it )}
+        SymComThread(weakListener, request).start()
+
     }
 
     /**
@@ -140,6 +144,18 @@ class SymComManager(context: Context) {
                 connectivityManager.activeNetworkInfo ?: return false
             @Suppress("DEPRECATION")
             return networkInfo.isConnected
+        }
+    }
+
+    /**
+     * Post a response on UI thread using the mCommunicationEventListener because this function can be
+     * called from timer context
+     */
+    private fun responseIfDebug(message: String, listener: WeakReference<CommunicationEventListener>){
+        if(debug) {
+            Handler(Looper.getMainLooper()).post {
+                listener.get()?.handleServerResponse(message)
+            }
         }
     }
 
