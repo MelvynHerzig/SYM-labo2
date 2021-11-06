@@ -59,9 +59,6 @@ class SymComThread(val listener : WeakReference<CommunicationEventListener>?,
 
                 val response = reader.readLine()
 
-                // Pause volontaire pour simuler une requête "longue"
-                SystemClock.sleep(2000)
-
                 Handler(Looper.getMainLooper()).post {
                     listener?.get()?.handleServerResponse(response!!)
                 }

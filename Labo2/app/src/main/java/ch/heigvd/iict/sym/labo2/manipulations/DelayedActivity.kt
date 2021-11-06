@@ -40,14 +40,14 @@ class DelayedActivity : BaseActivity() {
         sendButton = findViewById(R.id.delayed_btn_send)
         responseField = findViewById(R.id.delayed_response_field)
 
-        symComManager = SymComManager(this)
+        symComManager = SymComManager(this, true)
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: String) {
 
                 if (responseField.text == "") {
                     responseField.text = response
                 } else {
-                    "${responseField.text}\n------\n$response".also { responseField.text = it }
+                    "$response\n------\n${responseField.text}".also { responseField.text = it }
                 }
             }
         })

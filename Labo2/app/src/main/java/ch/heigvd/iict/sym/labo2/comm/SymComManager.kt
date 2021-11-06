@@ -10,6 +10,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.lang.ref.WeakReference
 import java.util.*
@@ -33,7 +35,7 @@ enum class RequestMethod(val value: String) {
  * Classe responsable de gérer la communication avec le thread de communication SymComThead
  * @param context Contexte de l'activité executant le manager pour récupérer l'état de la connexion.
  */
-class SymComManager(context: Context) {
+class SymComManager(context: Context, val debug: Boolean = false) {
 
     // Listener à notifier lors de réception d'une réponse
     private var mCommunicationEventListener: WeakReference<CommunicationEventListener>?
@@ -77,9 +79,10 @@ class SymComManager(context: Context) {
 
         if(mCommunicationEventListener != null && checkForInternet()) {
             // Démarrage transmission
-            SymComThread(mCommunicationEventListener, request).start()
+            sendRequestDirect(request, WeakReference(mCommunicationEventListener?.get()))
         } else {
-            mQueue.add(Pair(request, mCommunicationEventListener as WeakReference<CommunicationEventListener>))
+            responseIfDebug("Queued ${request.toString()}", WeakReference(mCommunicationEventListener?.get()))
+            mQueue.add(Pair(request, WeakReference(mCommunicationEventListener?.get())))
         }
     }
 
@@ -89,6 +92,7 @@ class SymComManager(context: Context) {
      */
     private fun sendRequestDirect( request: SymComRequest, listener: WeakReference<CommunicationEventListener>) {
 
+        responseIfDebug("Sending ${request}", mCommunicationEventListener!!)
         SymComThread(listener, request).start()
     }
 
@@ -130,6 +134,18 @@ class SymComManager(context: Context) {
                 connectivityManager.activeNetworkInfo ?: return false
             @Suppress("DEPRECATION")
             return networkInfo.isConnected
+        }
+    }
+
+    /**
+     * Post a response on UI thread using the mCommunicationEventListener because this function can be
+     * called from timer context
+     */
+    private fun responseIfDebug(message: String, listener: WeakReference<CommunicationEventListener>){
+        if(debug) {
+            Handler(Looper.getMainLooper()).post {
+                listener.get()?.handleServerResponse(message)
+            }
         }
     }
 
