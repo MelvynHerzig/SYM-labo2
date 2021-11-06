@@ -7,18 +7,13 @@
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
-import ch.heigvd.iict.sym.labo2.comm.ContentType
-import ch.heigvd.iict.sym.labo2.comm.RequestMethod
-import ch.heigvd.iict.sym.labo2.comm.SymComManager
-import ch.heigvd.iict.sym.labo2.comm.SymComBytesRequest
 import ch.heigvd.iict.sym.labo2.models.Person
 import ch.heigvd.iict.sym.labo2.models.Phone
+import android.widget.ArrayAdapter
+import ch.heigvd.iict.sym.labo2.comm.*
 
 /**
  * Activité implémentant le protocole de communication sérialisé.
@@ -72,52 +67,109 @@ class SerializedActivity : BaseActivity() {
         sendButton = findViewById(R.id.serialize_btn_send)
         responseField = findViewById(R.id.serialize_response_field)
 
-        // Adaptation de la liste d'autheurs
-        /*val adapter: ArrayAdapter<Author> = ArrayAdapter(this@SerializedActivity,
+        val protocols = arrayOf("JSON", "XML", "Protobuf")
+        val adapter: ArrayAdapter<String> = ArrayAdapter(this@SerializedActivity,
             android.R.layout.simple_list_item_1,
-            authorsList)
+            protocols)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        authorSpinner.setAdapter(adapter)*/
+        requestTypeSpinner.setAdapter(adapter)
+
+        // TODO: Faire fonctionner le spinner avec l'enum
+        /*requestTypeSpinner.setAdapter(
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_item,
+                ContentType.values()
+            )
+        )*/
 
         symComManager = SymComManager(this)
         symComManager.setCommunicationEventListener( object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
                 responseField.text = Person.parsingProtobufByteArrayData(response)
+                //responseField.text = "ByteArray"
             }
             override fun handleServerResponse(response: String) {
-                responseField.text = response
+                // TODO: gérer les différentes façon de recevoir
+                responseField.text = Person.parsingProtobufByteArrayData(response.toByteArray(Charsets.UTF_8))
+                //responseField.text = "String"
+                // TODO: Protobuf régler problème de retour du serveur
             }
         })
 
         sendButton.setOnClickListener {
+            responseField.text = getString(R.string.str_waiting_server)
+            val person = createPersonFromForm()
 
-            sendProtobuf()
-
+            // TODO: Faire fonctionner avec l'enum
             /*when (requestTypeSpinner.selectedItem) {
-                ContentType.JSON -> sendProtobuf()
-                ContentType.PROTOBUF -> sendProtobuf()
-
+                ContentType.JSON -> sendJSON(person)
+                ContentType.PROTOBUF -> sendProtobuf(person)
+                ContentType.XML -> sendXML(person)
+                ContentType.TEXT -> sendText(person)
             }*/
+
+            when (requestTypeSpinner.selectedItem) {
+                "JSON" -> sendJSON(person)
+                "Protobuf" -> sendProtobuf(person)
+                "XML" -> sendXML(person)
+            }
         }
     }
 
     /**
-     * Construit une requête en fonction des valeurs du formulaire
-     * Puis envoie cette dernière au serveur avec le Protocol Buffer
+     * Constuit un objet Person avec les valeurs des champs textes
      */
-    private fun sendProtobuf() {
-        val phoneHome = Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME)
-        val phoneMobile = Phone(phonenumberInputHome.text.toString(), Phone.Type.MOBILE)
-        val phoneWork = Phone(phonenumberInputHome.text.toString(), Phone.Type.WORK)
-
-        val person = Person(nameInput.text.toString(),
+    private fun createPersonFromForm() : Person {
+        return Person(nameInput.text.toString(),
             firstnameInput.text.toString(),
             middlenameInput.text.toString(),
-            mutableListOf(phoneHome, phoneMobile, phoneWork))
+            mutableListOf(Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME),
+                Phone(phonenumberInputHome.text.toString(), Phone.Type.MOBILE),
+                Phone(phonenumberInputHome.text.toString(), Phone.Type.WORK)))
+    }
 
+    /**
+     * Construit une requête avec la personne donnée
+     * Puis envoie cette dernière au serveur avec le Protocol Buffer
+     */
+    private fun sendProtobuf(person : Person) {
         symComManager.sendRequest( SymComBytesRequest("http://mobile.iict.ch/api/protobuf",
             person.creatingByteArrayForProtobufData(),
             ContentType.PROTOBUF,
+            RequestMethod.POST))
+    }
+
+    /**
+     * Construit une requête avec la personne donnée
+     * Puis envoie cette dernière au serveur avec JSON
+     */
+    private fun sendJSON(person : Person) {
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/protobuf",
+            person.toString(), //TODO
+            ContentType.JSON,
+            RequestMethod.POST))
+    }
+
+    /**
+     * Construit une requête avec la personne donnée
+     * Puis envoie cette dernière au serveur avec XML
+     */
+    private fun sendXML(person : Person) {
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/protobuf",
+            person.toString(), //TODO
+            ContentType.XML,
+            RequestMethod.POST))
+    }
+
+    /**
+     * Construit une requête avec la personne donnée
+     * Puis envoie cette dernière au serveur avec du Texte
+     */
+    private fun sendText(person : Person) {
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/protobuf",
+            person.toString(),
+            ContentType.TEXT,
             RequestMethod.POST))
     }
 }

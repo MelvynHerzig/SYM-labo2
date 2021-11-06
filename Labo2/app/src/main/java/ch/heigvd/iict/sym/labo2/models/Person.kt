@@ -13,6 +13,20 @@ import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
  */
 class Person(val name: String, val firstname:String, val middlename: String, val phones : MutableList<Phone>) {
 
+    override fun toString(): String {
+        val s = StringBuilder()
+
+        s.append("Person name: " + name +
+                "\nPerson firstname: " + firstname +
+                "\nPerson middlename: " + middlename)
+
+        for (phone in phones) {
+            s.append(phone)
+            s.append("\n")
+        }
+        return s.toString()
+    }
+
     /**
      * Créé un objet Person pour le Protocol Buffer
      * en fonction des données de l'objet Person
@@ -54,18 +68,14 @@ class Person(val name: String, val firstname:String, val middlename: String, val
          * Transforme un objet Directory de Protocol Buffer en String
          */
         private fun protobufToString(directory : DirectoryOuterClass.Directory) : String {
-
             val s = StringBuilder()
 
             for (person in directory.resultsList) {
-                s.append("Person name: " + person.name +
-                        "\nPerson firstname: " + person.firstname +
-                        "\nPerson middlename: " + person.middlename)
-
+                val phonesToAdd = mutableListOf<Phone>()
                 for (phoneNumber in person.phoneList) {
-                    s.append(Phone.getDirectoryPhoneType(phoneNumber.type) +
-                            " phone #: "+ phoneNumber.number + "\n")
+                    phonesToAdd.add(Phone(phoneNumber.number, Phone.getPhoneType(phoneNumber.type)))
                 }
+                s.append(Person(person.name, person.firstname, person.middlename, phonesToAdd))
             }
 
             return s.toString()
