@@ -14,6 +14,7 @@ import ch.heigvd.iict.sym.labo2.models.Person
 import ch.heigvd.iict.sym.labo2.models.Phone
 import android.widget.ArrayAdapter
 import ch.heigvd.iict.sym.labo2.comm.*
+import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
 
 /**
  * Activité implémentant le protocole de communication sérialisé.
@@ -46,7 +47,7 @@ class SerializedActivity : BaseActivity() {
     private lateinit var sendButton: Button
 
     // Référence sur le champ d'affichage de la réponse.
-    private lateinit var responseField: TextView
+    protected lateinit var responseField: TextView
 
     /**
      * À la création de l'activité.
@@ -86,14 +87,11 @@ class SerializedActivity : BaseActivity() {
         symComManager = SymComManager(this)
         symComManager.setCommunicationEventListener( object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
-                responseField.text = Person.parsingProtobufByteArrayData(response)
-                //responseField.text = "ByteArray"
+                responseField.text = Person.parsingDirectoryByteArrayData(response)
             }
             override fun handleServerResponse(response: String) {
                 // TODO: gérer les différentes façon de recevoir
-                responseField.text = Person.parsingProtobufByteArrayData(response.toByteArray(Charsets.UTF_8))
-                //responseField.text = "String"
-                // TODO: Protobuf régler problème de retour du serveur
+                responseField.text = response
             }
         })
 
@@ -135,7 +133,7 @@ class SerializedActivity : BaseActivity() {
      */
     private fun sendProtobuf(person : Person) {
         symComManager.sendRequest( SymComBytesRequest("http://mobile.iict.ch/api/protobuf",
-            person.creatingByteArrayForProtobufData(),
+            Person.creatingByteArrayForProtobufData(person),
             ContentType.PROTOBUF,
             RequestMethod.POST))
     }

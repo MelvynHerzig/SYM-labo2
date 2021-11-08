@@ -3,10 +3,8 @@ package ch.heigvd.iict.sym.labo2.comm
 import android.os.Handler
 import android.os.Looper
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
-import java.io.BufferedReader
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.InputStreamReader
+import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
+import java.io.*
 import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
@@ -25,7 +23,18 @@ class SymComThread(private val listener : WeakReference<CommunicationEventListen
      * Classe interne "statique" pour permettre la libération du SymComThread
      * dès que le post sur le handler a été effectué sans pour autant avoir été traité
      */
-    class ResponseRunnable(private val listener: WeakReference<CommunicationEventListener>, val response: String) : Runnable {
+    class ResponseStringRunnable(private val listener: WeakReference<CommunicationEventListener>, val response: String) : Runnable {
+
+        override fun run() {
+            listener.get()?.handleServerResponse(response)
+        }
+    }
+
+    /**
+     * Classe interne "statique" pour permettre la libération du SymComThread
+     * dès que le post sur le handler a été effectué sans pour autant avoir été traité
+     */
+    class ResponseBytesRunnable(private val listener: WeakReference<CommunicationEventListener>, val response: ByteArray) : Runnable {
 
         override fun run() {
             listener.get()?.handleServerResponse(response)
@@ -61,11 +70,15 @@ class SymComThread(private val listener : WeakReference<CommunicationEventListen
 
             try {
                 val inputstream = DataInputStream(connection.inputStream)
-                val reader = BufferedReader(InputStreamReader(inputstream))
 
-                val response = reader.readLine()
-
-                Handler(Looper.getMainLooper()).post(ResponseRunnable(listener, response))
+                if (request.contentType == ContentType.PROTOBUF) {
+                    val bytes = inputstream.readBytes()
+                    Handler(Looper.getMainLooper()).post(ResponseBytesRunnable(listener, bytes))
+                } else {
+                    val reader = BufferedReader(InputStreamReader(inputstream))
+                    val response = reader.readLine()
+                    Handler(Looper.getMainLooper()).post(ResponseStringRunnable(listener, response))
+                }
 
             } catch (exception: Exception) {
                 exception.printStackTrace()

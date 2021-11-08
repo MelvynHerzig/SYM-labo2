@@ -13,7 +13,6 @@ abstract class SymComRequest (val url : String,
 
     abstract fun getBytesFromBody() : ByteArray
 
-
     // Identifiant de la requête
     private val id: Int = getId()
 
