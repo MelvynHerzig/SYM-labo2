@@ -68,21 +68,11 @@ class SerializedActivity : BaseActivity() {
         sendButton = findViewById(R.id.serialize_btn_send)
         responseField = findViewById(R.id.serialize_response_field)
 
-        val protocols = arrayOf("JSON", "XML", "Protobuf")
-        val adapter: ArrayAdapter<String> = ArrayAdapter(this@SerializedActivity,
-            android.R.layout.simple_list_item_1,
-            protocols)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        requestTypeSpinner.setAdapter(adapter)
-
-        // TODO: Faire fonctionner le spinner avec l'enum
-        /*requestTypeSpinner.setAdapter(
-            ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item,
-                ContentType.values()
-            )
-        )*/
+        requestTypeSpinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            ContentType.values()
+        )
 
         symComManager = SymComManager(this)
         symComManager.setCommunicationEventListener( object : CommunicationEventListener {
@@ -99,18 +89,11 @@ class SerializedActivity : BaseActivity() {
             responseField.text = getString(R.string.str_waiting_server)
             val person = createPersonFromForm()
 
-            // TODO: Faire fonctionner avec l'enum
-            /*when (requestTypeSpinner.selectedItem) {
+            when (requestTypeSpinner.selectedItem) {
                 ContentType.JSON -> sendJSON(person)
                 ContentType.PROTOBUF -> sendProtobuf(person)
                 ContentType.XML -> sendXML(person)
                 ContentType.TEXT -> sendText(person)
-            }*/
-
-            when (requestTypeSpinner.selectedItem) {
-                "JSON" -> sendJSON(person)
-                "Protobuf" -> sendProtobuf(person)
-                "XML" -> sendXML(person)
             }
         }
     }
