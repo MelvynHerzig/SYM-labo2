@@ -3,7 +3,6 @@ package ch.heigvd.iict.sym.labo2.comm
 import android.os.Handler
 import android.os.Looper
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
-import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
 import java.io.*
 import java.lang.ref.WeakReference
 import java.net.HttpURLConnection

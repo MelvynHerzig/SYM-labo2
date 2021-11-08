@@ -10,4 +10,44 @@
     android:layout_marginBottom="@dimen/app_vertical_margin"
     tools:context=".manipulations.CompressedActivity">
 
+    <LinearLayout
+        android:id="@+id/compressed_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/compressed_user_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_enter_text"
+            android:inputType="text"/>
+
+        <Button
+            android:id="@+id/compressed_btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_send"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/compressed_response_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/str_response_title"/>
+
+        <TextView
+            android:id="@+id/compressed_response_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_vertical_separation"
+            android:text="@string/str_none" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
