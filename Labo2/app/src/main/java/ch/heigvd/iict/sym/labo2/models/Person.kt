@@ -7,6 +7,7 @@
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
+import com.google.gson.Gson
 
 /**
  * Classe Modélisant une personne
@@ -25,6 +26,10 @@ class Person(val name: String, val firstname:String, val middlename: String, val
             s.append("\n")
         }
         return s.toString()
+    }
+
+    fun toJson() : String {
+        return Gson().toJson(this)
     }
 
     companion object {
@@ -62,6 +67,10 @@ class Person(val name: String, val firstname:String, val middlename: String, val
          */
         fun parsingDirectoryByteArrayData(byteArray : ByteArray) : String {
             return DirectoryOuterClass.Directory.parseFrom(byteArray).toString()
+        }
+
+        fun fromJson(jsonStr : String) : Person{
+            return Gson().fromJson(jsonStr, Person::class.java)
         }
     }
 }

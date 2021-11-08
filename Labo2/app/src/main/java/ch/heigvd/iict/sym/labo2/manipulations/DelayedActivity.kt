@@ -42,16 +42,15 @@ class DelayedActivity : BaseActivity() {
 
         symComManager = SymComManager(this, true)
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String) {
 
-                if (responseField.text == "") {
-                    responseField.text = response
-                } else {
-                    "$response\n------\n${responseField.text}".also { responseField.text = it }
-                }
-            }
             override fun handleServerResponse(response: ByteArray) {
-                throw Exception("Impossible to read ByteArray")
+
+                val strResponse = String(response)
+                if (responseField.text == "") {
+                    responseField.text = strResponse
+                } else {
+                    "$strResponse\n------\n${responseField.text}".also { responseField.text = it }
+                }
             }
         })
 
