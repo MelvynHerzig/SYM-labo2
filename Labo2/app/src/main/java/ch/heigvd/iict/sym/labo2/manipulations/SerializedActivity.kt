@@ -126,7 +126,7 @@ class SerializedActivity : BaseActivity() {
      * Puis envoie cette dernière au serveur avec JSON
      */
     private fun sendJSON(person : Person) {
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/protobuf",
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/json",
             person.toString(), //TODO
             ContentType.JSON,
             RequestMethod.POST))
@@ -137,7 +137,7 @@ class SerializedActivity : BaseActivity() {
      * Puis envoie cette dernière au serveur avec XML
      */
     private fun sendXML(person : Person) {
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/protobuf",
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/xml",
             person.toString(), //TODO
             ContentType.XML,
             RequestMethod.POST))
@@ -148,7 +148,7 @@ class SerializedActivity : BaseActivity() {
      * Puis envoie cette dernière au serveur avec du Texte
      */
     private fun sendText(person : Person) {
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/protobuf",
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
             person.toString(),
             ContentType.TEXT,
             RequestMethod.POST))
