@@ -141,7 +141,7 @@ class SerializedActivity : BaseActivity() {
 
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
-                responseField.text = Person.fromJson(String(response)).toString()
+                responseField.text = String(response)
             }
         })
 

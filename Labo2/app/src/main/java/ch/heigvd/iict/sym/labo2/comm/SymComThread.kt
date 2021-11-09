@@ -7,6 +7,7 @@ import java.io.*
 import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.InflaterInputStream
 
@@ -54,18 +55,18 @@ class SymComThread(
             connection.requestMethod = request.requestMethod.value
             connection.doOutput = request.requestMethod != RequestMethod.GET
             connection.setRequestProperty("charset", "utf-8")
-            connection.setRequestProperty("Content-length", postData.size.toString())
+            //connection.setRequestProperty("Content-length", postData.size.toString())
             connection.setRequestProperty("Content-Type", request.contentType.value)
 
             val outputStream : OutputStream
-          
+
             if (request.isCompressed) {
                 // Ajout des entêtes spécifiques pour le mode compressé
                 connection.setRequestProperty("X-Network", "CSD")
                 connection.setRequestProperty("X-Content-Encoding", "deflate")
 
                 // Définition des streams spécifiques pour le mode compressé
-                outputStream = DeflaterOutputStream(connection.outputStream)
+                outputStream = DeflaterOutputStream(connection.outputStream, Deflater(Deflater.DEFAULT_COMPRESSION, true))
             } else {
                 // Définition des streams pour les requêts standard
                 outputStream = DataOutputStream(connection.outputStream)
@@ -79,15 +80,14 @@ class SymComThread(
                 exception.printStackTrace()
             }
 
+            val inputstream = if (request.isCompressed) {
+                InflaterInputStream(connection.inputStream)
+            } else {
+                DataInputStream(connection.inputStream)
+            }
+
             // Reçoit les données du serveur
             try {
-
-                val inputstream = if (request.isCompressed) {
-                    InflaterInputStream(connection.inputStream)
-                } else {
-                    DataInputStream(connection.inputStream)
-                }
-
                 val bytes = inputstream.readBytes()
                 Handler(Looper.getMainLooper()).post(ResponseRunnable(listener, bytes))
 
