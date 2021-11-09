@@ -53,15 +53,11 @@ class CompressedActivity : BaseActivity() {
                 return@setOnClickListener
             }
             responseField.text = getString(R.string.str_waiting_server)
-            // TODO: compresser et changer les entêtes
-            // X-Network: CSD
-            // X-Content-Encoding: deflate
-            // Envoyer via: DeflaterOutputStream (package java.util.zip)
-            // Recevoir via: InflaterInputStream
             symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/zip",
                 userInput.text.toString(),
                 ContentType.TEXT,
-                RequestMethod.POST)
+                RequestMethod.POST,
+                true)
             )
         }
     }

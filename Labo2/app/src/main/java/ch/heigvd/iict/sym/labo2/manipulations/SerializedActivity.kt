@@ -127,7 +127,8 @@ class SerializedActivity : BaseActivity() {
                 "http://mobile.iict.ch/api/protobuf",
                 Person.creatingByteArrayForProtobufData(person),
                 ContentType.PROTOBUF,
-                RequestMethod.POST
+                RequestMethod.POST,
+                false
             )
         )
     }
@@ -149,7 +150,8 @@ class SerializedActivity : BaseActivity() {
                 "http://mobile.iict.ch/api/json",
                 person.toJson(),
                 ContentType.JSON,
-                RequestMethod.POST
+                RequestMethod.POST,
+                false
             )
         )
     }
@@ -166,12 +168,14 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
+
         symComManager.sendRequest(
             SymComStringRequest(
                 "http://mobile.iict.ch/api/xml",
                 XmlMapper().registerKotlinModule().writeValueAsString(Directory(person)),
                 ContentType.XML,
-                RequestMethod.POST
+                RequestMethod.POST,
+                false
             )
         )
     }
@@ -192,7 +196,8 @@ class SerializedActivity : BaseActivity() {
                 "http://mobile.iict.ch/api/txt",
                 person.toString(),
                 ContentType.TEXT,
-                RequestMethod.POST
+                RequestMethod.POST,
+                false
             )
         )
     }

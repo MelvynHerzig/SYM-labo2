@@ -7,6 +7,8 @@ import java.io.*
 import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.zip.DeflaterOutputStream
+import java.util.zip.InflaterInputStream
 
 /**
  * Classe implémentant un thread de communication http pour le SymComManager
@@ -53,9 +55,20 @@ class SymComThread(
             connection.setRequestProperty("Content-length", postData.size.toString())
             connection.setRequestProperty("Content-Type", request.contentType.value)
 
+            val outputStream : OutputStream
+            val inputstream : InputStream
+            if (request.isCompressed) {
+                connection.setRequestProperty("X-Network", "CSD")
+                connection.setRequestProperty("X-Content-Encoding", "deflate")
+
+                outputStream = DeflaterOutputStream(connection.outputStream)
+                inputstream = InflaterInputStream(connection.inputStream)
+            } else {
+                outputStream = DataOutputStream(connection.outputStream)
+                inputstream = DataInputStream(connection.inputStream)
+            }
 
             try {
-                val outputStream = DataOutputStream(connection.outputStream)
                 outputStream.write(postData)
                 outputStream.flush()
             } catch (exception: Exception) {
@@ -63,8 +76,6 @@ class SymComThread(
             }
 
             try {
-                val inputstream = DataInputStream(connection.inputStream)
-
                 val bytes = inputstream.readBytes()
                 Handler(Looper.getMainLooper()).post(ResponseRunnable(listener, bytes))
 

@@ -12,8 +12,9 @@ package ch.heigvd.iict.sym.labo2.comm
 class SymComBytesRequest (url: String,
                           private val body : ByteArray,
                           contentType: ContentType,
-                          requestMethod: RequestMethod)
-    : SymComRequest(url, contentType, requestMethod) {
+                          requestMethod: RequestMethod,
+                          isCompressed: Boolean)
+    : SymComRequest(url, contentType, requestMethod, isCompressed) {
 
     override fun getBytesFromBody() : ByteArray {
         return body

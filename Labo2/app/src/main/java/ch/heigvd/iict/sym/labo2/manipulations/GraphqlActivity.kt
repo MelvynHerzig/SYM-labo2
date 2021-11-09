@@ -47,6 +47,12 @@ class GraphqlActivity : BaseActivity() {
         authorSpinner = findViewById(R.id.graphql_authors_spinner)
         responseField = findViewById(R.id.graphql_books_recyclerView)
 
+        // Adaptateur vite pour éviter: E/RecyclerView: No adapter attached; skipping layout
+        val bookList: MutableList<Book> = mutableListOf()
+        val adapter = BookListAdapter(bookList)
+        responseField.adapter = adapter
+        responseField.layoutManager = LinearLayoutManager(this@GraphqlActivity)
+
         // Communication
         symComManager = SymComManager(this)
 
@@ -107,7 +113,9 @@ class GraphqlActivity : BaseActivity() {
             }
         })
         // Envoie de la demande des autheurs
-        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\":\"{findAllAuthors{id, name}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql",
+            "{\"query\":\"{findAllAuthors{id, name}}\"}",
+            ContentType.JSON, RequestMethod.POST, false))
     }
 
     /**
@@ -142,6 +150,8 @@ class GraphqlActivity : BaseActivity() {
         })
 
         // Envoie de la demande des livres
-        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql",
+            "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}",
+            ContentType.JSON, RequestMethod.POST, false))
     }
 }
