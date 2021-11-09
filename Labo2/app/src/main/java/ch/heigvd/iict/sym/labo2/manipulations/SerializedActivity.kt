@@ -16,7 +16,10 @@ import ch.heigvd.iict.sym.labo2.models.Phone
 import android.widget.ArrayAdapter
 import ch.heigvd.iict.sym.labo2.comm.*
 import ch.heigvd.iict.sym.labo2.models.Directory
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+
 
 /**
  * Activité implémentant le protocole de communication sérialisé.
@@ -94,84 +97,109 @@ class SerializedActivity : BaseActivity() {
     /**
      * Constuit un objet Person avec les valeurs des champs textes
      */
-    private fun createPersonFromForm() : Person {
-        return Person(nameInput.text.toString(),
+    private fun createPersonFromForm(): Person {
+        return Person(
+            nameInput.text.toString(),
             firstnameInput.text.toString(),
             middlenameInput.text.toString(),
-            mutableListOf(Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME),
+            mutableListOf(
+                Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME),
                 Phone(phonenumberInputHome.text.toString(), Phone.Type.MOBILE),
-                Phone(phonenumberInputHome.text.toString(), Phone.Type.WORK)))
+                Phone(phonenumberInputHome.text.toString(), Phone.Type.WORK)
+            )
+        )
     }
 
     /**
      * Construit une requête avec la personne donnée
      * Puis envoie cette dernière au serveur avec le Protocol Buffer
      */
-    private fun sendProtobuf(person : Person) {
+    private fun sendProtobuf(person: Person) {
 
-        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+        symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
                 responseField.text = Person.parsingDirectoryByteArrayData(response)
             }
         })
 
-        symComManager.sendRequest( SymComBytesRequest("http://mobile.iict.ch/api/protobuf",
-            Person.creatingByteArrayForProtobufData(person),
-            ContentType.PROTOBUF,
-            RequestMethod.POST))
+        symComManager.sendRequest(
+            SymComBytesRequest(
+                "http://mobile.iict.ch/api/protobuf",
+                Person.creatingByteArrayForProtobufData(person),
+                ContentType.PROTOBUF,
+                RequestMethod.POST
+            )
+        )
     }
 
     /**
      * Construit une requête avec la personne donnée
      * Puis envoie cette dernière au serveur avec JSON
      */
-    private fun sendJSON(person : Person) {
+    private fun sendJSON(person: Person) {
 
-        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+        symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
                 responseField.text = Person.fromJson(String(response)).toString()
             }
         })
 
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/json",
-            person.toJson(),
-            ContentType.JSON,
-            RequestMethod.POST))
+        symComManager.sendRequest(
+            SymComStringRequest(
+                "http://mobile.iict.ch/api/json",
+                person.toJson(),
+                ContentType.JSON,
+                RequestMethod.POST
+            )
+        )
     }
 
     /**
      * Construit une requête avec la personne donnée
      * Puis envoie cette dernière au serveur avec XML
      */
-    private fun sendXML(person : Person) {
-        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+    private fun sendXML(person: Person) {
+        symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
-                responseField.text = XmlMapper().readValue(String(response), Directory::class.java).person.toString()
+                responseField.text =
+                    XmlMapper().readValue(String(response), Directory::class.java).person.toString()
             }
         })
 
-        Log.println(Log.DEBUG, "Xml str", XmlMapper().writeValueAsString(Directory(person)))
+        val xmlMapper = XmlMapper(JacksonXmlModule().apply {
+            setDefaultUseWrapper(false)
+        }).registerKotlinModule()
 
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/xml",
-            XmlMapper().writeValueAsString(Directory(person)),
-            ContentType.XML,
-            RequestMethod.POST))
+        Log.println(Log.DEBUG, "Xml str", xmlMapper.writeValueAsString(person.phones[0]))
+
+        symComManager.sendRequest(
+            SymComStringRequest(
+                "http://mobile.iict.ch/api/xml",
+                XmlMapper().writeValueAsString(Directory(person)),
+                ContentType.XML,
+                RequestMethod.POST
+            )
+        )
     }
 
     /**
      * Construit une requête avec la personne donnée
      * Puis envoie cette dernière au serveur avec du Texte
      */
-    private fun sendText(person : Person) {
-        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+    private fun sendText(person: Person) {
+        symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
                 responseField.text = String(response)
             }
         })
 
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
-            person.toString(),
-            ContentType.TEXT,
-            RequestMethod.POST))
+        symComManager.sendRequest(
+            SymComStringRequest(
+                "http://mobile.iict.ch/api/txt",
+                person.toString(),
+                ContentType.TEXT,
+                RequestMethod.POST
+            )
+        )
     }
 }
