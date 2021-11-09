@@ -42,12 +42,9 @@ class CompressedActivity : BaseActivity() {
 
         symComManager = SymComManager(this)
         symComManager.setCommunicationEventListener( object : CommunicationEventListener {
-            // TODO
-            override fun handleServerResponse(response: String) {
-                responseField.text = response
-            }
+
             override fun handleServerResponse(response: ByteArray) {
-                throw Exception("Impossible to read ByteArray")
+                throw Exception("Not implemented yet")
             }
         })
 

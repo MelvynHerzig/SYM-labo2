@@ -49,11 +49,9 @@ class AsyncActivity : BaseActivity() {
 
         symComManager = SymComManager(this)
         symComManager.setCommunicationEventListener( object : CommunicationEventListener {
-            override fun handleServerResponse(response: String) {
-                responseField.text = response
-            }
+            
             override fun handleServerResponse(response: ByteArray) {
-                throw Exception("Impossible to read ByteArray")
+                responseField.text = String(response)
             }
         })
 

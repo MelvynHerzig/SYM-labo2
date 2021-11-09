@@ -84,10 +84,10 @@ class GraphqlActivity : BaseActivity() {
         Toast.makeText(applicationContext, getString(R.string.str_authors_loading), Toast.LENGTH_SHORT).show()
 
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String) {
 
+            override fun handleServerResponse(response: ByteArray) {
                 // Récupération de la réponse sous forme d'un tableau d'autheurs
-                val allAuthors = JSONObject(response).getJSONObject("data").getJSONArray("findAllAuthors")
+                val allAuthors = JSONObject(String(response)).getJSONObject("data").getJSONArray("findAllAuthors")
                 val authorsList: MutableList<Author> = mutableListOf()
 
                 // Transformation des autheurs JSON en autheur Kotlin
@@ -103,16 +103,13 @@ class GraphqlActivity : BaseActivity() {
 
                 // Adaptation de la liste d'autheurs
                 val adapter: ArrayAdapter<Author> = ArrayAdapter(this@GraphqlActivity,
-                                                                 android.R.layout.simple_list_item_1,
-                                                                 authorsList)
+                    android.R.layout.simple_list_item_1,
+                    authorsList)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 authorSpinner.setAdapter(adapter)
 
                 // Notification opération terminée.
                 Toast.makeText(applicationContext, getString(R.string.str_authors_loaded), Toast.LENGTH_SHORT).show()
-            }
-            override fun handleServerResponse(response: ByteArray) {
-                throw Exception("Impossible to read ByteArray")
             }
         })
         // Envoie de la demande des autheurs
@@ -126,10 +123,10 @@ class GraphqlActivity : BaseActivity() {
     private fun fillAuthorBooks(author: Author) {
 
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String) {
 
+            override fun handleServerResponse(response: ByteArray) {
                 // Récupération de la réponse sous forme d'un tableau de livres
-                val booksFromAuthor = JSONObject(response).getJSONObject("data").getJSONObject("findAuthorById").getJSONArray("books")
+                val booksFromAuthor = JSONObject(String(response)).getJSONObject("data").getJSONObject("findAuthorById").getJSONArray("books")
                 val bookList: MutableList<Book> = mutableListOf()
 
                 // Transformation des livres JSON en livres Kotlin
@@ -147,9 +144,6 @@ class GraphqlActivity : BaseActivity() {
                 val adapter = BookListAdapter(bookList)
                 responseField.adapter = adapter
                 responseField.layoutManager = LinearLayoutManager(this@GraphqlActivity)
-            }
-            override fun handleServerResponse(response: ByteArray) {
-                throw Exception("Impossible to read ByteArray")
             }
         })
 

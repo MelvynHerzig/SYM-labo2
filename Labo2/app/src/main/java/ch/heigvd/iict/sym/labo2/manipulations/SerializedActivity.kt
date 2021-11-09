@@ -7,6 +7,7 @@
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
@@ -14,6 +15,8 @@ import ch.heigvd.iict.sym.labo2.models.Person
 import ch.heigvd.iict.sym.labo2.models.Phone
 import android.widget.ArrayAdapter
 import ch.heigvd.iict.sym.labo2.comm.*
+import ch.heigvd.iict.sym.labo2.models.Directory
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
 
 /**
  * Activité implémentant le protocole de communication sérialisé.
@@ -74,15 +77,6 @@ class SerializedActivity : BaseActivity() {
         )
 
         symComManager = SymComManager(this)
-        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
-            override fun handleServerResponse(response: ByteArray) {
-                responseField.text = Person.parsingDirectoryByteArrayData(response)
-            }
-            override fun handleServerResponse(response: String) {
-                // TODO: gérer les différentes façon de recevoir
-                responseField.text = response
-            }
-        })
 
         sendButton.setOnClickListener {
             responseField.text = getString(R.string.str_waiting_server)
@@ -114,6 +108,13 @@ class SerializedActivity : BaseActivity() {
      * Puis envoie cette dernière au serveur avec le Protocol Buffer
      */
     private fun sendProtobuf(person : Person) {
+
+        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+            override fun handleServerResponse(response: ByteArray) {
+                responseField.text = Person.parsingDirectoryByteArrayData(response)
+            }
+        })
+
         symComManager.sendRequest( SymComBytesRequest("http://mobile.iict.ch/api/protobuf",
             Person.creatingByteArrayForProtobufData(person),
             ContentType.PROTOBUF,
@@ -125,8 +126,15 @@ class SerializedActivity : BaseActivity() {
      * Puis envoie cette dernière au serveur avec JSON
      */
     private fun sendJSON(person : Person) {
+
+        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+            override fun handleServerResponse(response: ByteArray) {
+                responseField.text = Person.fromJson(String(response)).toString()
+            }
+        })
+
         symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/json",
-            person.toString(), //TODO
+            person.toJson(),
             ContentType.JSON,
             RequestMethod.POST))
     }
@@ -136,8 +144,16 @@ class SerializedActivity : BaseActivity() {
      * Puis envoie cette dernière au serveur avec XML
      */
     private fun sendXML(person : Person) {
+        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+            override fun handleServerResponse(response: ByteArray) {
+                responseField.text = XmlMapper().readValue(String(response), Directory::class.java).person.toString()
+            }
+        })
+
+        Log.println(Log.DEBUG, "Xml str", XmlMapper().writeValueAsString(Directory(person)))
+
         symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/xml",
-            person.toString(), //TODO
+            XmlMapper().writeValueAsString(Directory(person)),
             ContentType.XML,
             RequestMethod.POST))
     }
@@ -147,6 +163,12 @@ class SerializedActivity : BaseActivity() {
      * Puis envoie cette dernière au serveur avec du Texte
      */
     private fun sendText(person : Person) {
+        symComManager.setCommunicationEventListener( object : CommunicationEventListener {
+            override fun handleServerResponse(response: ByteArray) {
+                responseField.text = String(response)
+            }
+        })
+
         symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
             person.toString(),
             ContentType.TEXT,
