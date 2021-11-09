@@ -163,8 +163,7 @@ class SerializedActivity : BaseActivity() {
     private fun sendXML(person: Person) {
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
-                responseField.text =
-                    XmlMapper().readValue(String(response), Directory::class.java).person.toString()
+                responseField.text = String(response)
             }
         })
 

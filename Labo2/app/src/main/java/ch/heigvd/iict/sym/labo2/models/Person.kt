@@ -22,18 +22,21 @@ class Person(
     @JacksonXmlProperty
     val name: String,
     @JacksonXmlProperty
-    val firstname:String,
+    val firstname: String,
     @JacksonXmlProperty
     val middlename: String,
     @JacksonXmlElementWrapper(useWrapping = false, localName = "phone")
-    val phone : List<Phone>) {
+    val phone: List<Phone>
+) {
 
     override fun toString(): String {
         val s = StringBuilder()
 
-        s.append("Person name: " + name +
-                "\nPerson firstname: " + firstname +
-                "\nPerson middlename: " + middlename)
+        s.append(
+            "Person name: " + name +
+                    "\nPerson firstname: " + firstname +
+                    "\nPerson middlename: " + middlename
+        )
 
         for (phone in phone) {
             s.append(phone)
@@ -42,12 +45,14 @@ class Person(
         return s.toString()
     }
 
-    fun toJson() : String {
+    fun toJson(): String {
         return Gson().toJson(this)
     }
 
-    fun toXml(): String{
-        return XmlMapper().registerKotlinModule().writeValueAsString(Directory(this))
+    fun toXml(): String {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<!DOCTYPE directory SYSTEM \"http://mobile.iict.ch/directory.dtd\">" +
+                XmlMapper().registerKotlinModule().writeValueAsString(Directory(this))
     }
 
     companion object {
@@ -55,7 +60,7 @@ class Person(
          * Créé un objet Person pour le Protocol Buffer
          * en fonction des données de l'objet Person
          */
-        private fun createProtobufPerson(person : Person) : DirectoryOuterClass.Person {
+        private fun createProtobufPerson(person: Person): DirectoryOuterClass.Person {
             val protoPerson = DirectoryOuterClass.Person.newBuilder()
                 .setName(person.name)
                 .setFirstname(person.firstname)
@@ -72,7 +77,7 @@ class Person(
          * Prépare un ByteArray contenant les données de la personne
          * Le ByteArray est prêt à être envoyer
          */
-        fun creatingByteArrayForProtobufData(person : Person) : ByteArray {
+        fun creatingByteArrayForProtobufData(person: Person): ByteArray {
             val directory = DirectoryOuterClass.Directory.newBuilder()
 
             directory.addResults(createProtobufPerson(person))
@@ -83,11 +88,11 @@ class Person(
         /**
          * Transforme un ByteArray en string en l'analysant
          */
-        fun parsingDirectoryByteArrayData(byteArray : ByteArray) : String {
+        fun parsingDirectoryByteArrayData(byteArray: ByteArray): String {
             return DirectoryOuterClass.Directory.parseFrom(byteArray).toString()
         }
 
-        fun fromJson(jsonStr : String) : Person{
+        fun fromJson(jsonStr: String): Person {
             return Gson().fromJson(jsonStr, Person::class.java)
         }
     }

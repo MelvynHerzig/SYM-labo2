@@ -56,16 +56,13 @@ class SymComThread(
             connection.setRequestProperty("Content-Type", request.contentType.value)
 
             val outputStream : OutputStream
-            val inputstream : InputStream
             if (request.isCompressed) {
                 connection.setRequestProperty("X-Network", "CSD")
                 connection.setRequestProperty("X-Content-Encoding", "deflate")
 
                 outputStream = DeflaterOutputStream(connection.outputStream)
-                inputstream = InflaterInputStream(connection.inputStream)
             } else {
                 outputStream = DataOutputStream(connection.outputStream)
-                inputstream = DataInputStream(connection.inputStream)
             }
 
             try {
@@ -74,6 +71,8 @@ class SymComThread(
             } catch (exception: Exception) {
                 exception.printStackTrace()
             }
+
+            val inputstream : InputStream = if(request.isCompressed) { InflaterInputStream(connection.inputStream)} else {DataInputStream(connection.inputStream)}
 
             try {
                 val bytes = inputstream.readBytes()
