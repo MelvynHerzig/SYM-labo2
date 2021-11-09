@@ -7,12 +7,21 @@
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import java.lang.Exception
 
 /**
  * Classe Modélisant un numéro de téléphone avec un certain "type"
  */
-class Phone(val number: String, val type: Type) {
+@JacksonXmlRootElement(localName = "phone")
+class Phone(
+    @JacksonXmlText(value=true)
+    val number: String,
+    @JacksonXmlProperty(isAttribute = true)
+    val type: Type) {
     enum class Type {
         HOME,
         MOBILE,
@@ -22,7 +31,7 @@ class Phone(val number: String, val type: Type) {
     override fun toString(): String {
 
         val typeStr = if (type == null)  "" else getStringPhoneType(type)
-        return "Phone #: " + number + typeStr
+        return "Phone #: $number $typeStr"
     }
 
     /**

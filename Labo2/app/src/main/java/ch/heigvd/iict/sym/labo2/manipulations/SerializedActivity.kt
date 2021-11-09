@@ -150,6 +150,8 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
+        Log.println(Log.DEBUG, "Xml str", XmlMapper().writeValueAsString(Directory(person)))
+
         symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/xml",
             XmlMapper().writeValueAsString(Directory(person)),
             ContentType.XML,
