@@ -23,8 +23,8 @@ class Person(
     val firstname:String,
     @JacksonXmlProperty
     val middlename: String,
-    @JacksonXmlElementWrapper(useWrapping = false)
-    val phones : List<Phone>) {
+    @JacksonXmlElementWrapper(useWrapping = false, localName = "phone")
+    val phone : List<Phone>) {
 
     override fun toString(): String {
         val s = StringBuilder()
@@ -33,7 +33,7 @@ class Person(
                 "\nPerson firstname: " + firstname +
                 "\nPerson middlename: " + middlename)
 
-        for (phone in phones) {
+        for (phone in phone) {
             s.append(phone)
             s.append("\n")
         }
@@ -55,7 +55,7 @@ class Person(
                 .setFirstname(person.firstname)
                 .setMiddlename(person.middlename)
 
-            for (phone in person.phones) {
+            for (phone in person.phone) {
                 protoPerson.addPhone(phone.createProtobufPhone())
             }
 

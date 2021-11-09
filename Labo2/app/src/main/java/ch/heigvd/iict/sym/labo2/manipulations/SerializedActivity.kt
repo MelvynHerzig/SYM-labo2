@@ -104,8 +104,8 @@ class SerializedActivity : BaseActivity() {
             middlenameInput.text.toString(),
             mutableListOf(
                 Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME),
-                Phone(phonenumberInputHome.text.toString(), Phone.Type.MOBILE),
-                Phone(phonenumberInputHome.text.toString(), Phone.Type.WORK)
+                Phone(phonenumberInputMobile.text.toString(), Phone.Type.MOBILE),
+                Phone(phonenumberInputWork.text.toString(), Phone.Type.WORK)
             )
         )
     }
@@ -166,16 +166,10 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
-        val xmlMapper = XmlMapper(JacksonXmlModule().apply {
-            setDefaultUseWrapper(false)
-        }).registerKotlinModule()
-
-        Log.println(Log.DEBUG, "Xml str", xmlMapper.writeValueAsString(person.phones[0]))
-
         symComManager.sendRequest(
             SymComStringRequest(
                 "http://mobile.iict.ch/api/xml",
-                XmlMapper().writeValueAsString(Directory(person)),
+                XmlMapper().registerKotlinModule().writeValueAsString(Directory(person)),
                 ContentType.XML,
                 RequestMethod.POST
             )
