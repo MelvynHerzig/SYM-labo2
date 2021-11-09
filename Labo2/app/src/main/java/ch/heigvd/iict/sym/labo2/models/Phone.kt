@@ -20,12 +20,20 @@ import java.lang.Exception
 class Phone(
     @JacksonXmlText(value=true)
     val number: String,
-    @JacksonXmlProperty(isAttribute = true)
+    @JacksonXmlElementWrapper(useWrapping = false)
     val type: Type) {
-    enum class Type {
-        HOME,
-        MOBILE,
-        WORK
+
+
+    enum class Type(
+        @JacksonXmlProperty(isAttribute = true)
+        val type: String) {
+        HOME("home"),
+        MOBILE("mobile"),
+        WORK("work");
+
+        override fun toString(): String {
+            return type
+        }
     }
 
     override fun toString(): String {
