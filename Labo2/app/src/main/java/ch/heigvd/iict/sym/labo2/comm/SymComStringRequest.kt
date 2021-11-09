@@ -14,8 +14,9 @@ import java.nio.charset.StandardCharsets
 class SymComStringRequest (url : String,
                            private val body : String,
                            contentType  : ContentType,
-                           requestMethod: RequestMethod)
-    : SymComRequest(url, contentType, requestMethod) {
+                           requestMethod: RequestMethod,
+                           isCompressed: Boolean)
+    : SymComRequest(url, contentType, requestMethod, isCompressed) {
 
     /**
      * Retourne un tableau de bytes en fonction des données de la requête

@@ -9,7 +9,8 @@ package ch.heigvd.iict.sym.labo2.comm
 
 abstract class SymComRequest (val url : String,
                               val contentType : ContentType,
-                              val requestMethod: RequestMethod) {
+                              val requestMethod: RequestMethod,
+                              val isCompressed: Boolean) {
 
     abstract fun getBytesFromBody() : ByteArray
 

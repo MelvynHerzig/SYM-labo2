@@ -122,14 +122,11 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
-        symComManager.sendRequest(
-            SymComBytesRequest(
-                "http://mobile.iict.ch/api/protobuf",
-                Person.creatingByteArrayForProtobufData(person),
-                ContentType.PROTOBUF,
-                RequestMethod.POST
-            )
-        )
+        symComManager.sendRequest( SymComBytesRequest("http://mobile.iict.ch/api/protobuf",
+            Person.creatingByteArrayForProtobufData(person),
+            ContentType.PROTOBUF,
+            RequestMethod.POST,
+            false))
     }
 
     /**
@@ -144,14 +141,11 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
-        symComManager.sendRequest(
-            SymComStringRequest(
-                "http://mobile.iict.ch/api/json",
-                person.toJson(),
-                ContentType.JSON,
-                RequestMethod.POST
-            )
-        )
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/json",
+            person.toJson(),
+            ContentType.JSON,
+            RequestMethod.POST,
+            false))
     }
 
     /**
@@ -170,16 +164,14 @@ class SerializedActivity : BaseActivity() {
             setDefaultUseWrapper(false)
         }).registerKotlinModule()
 
-        Log.println(Log.DEBUG, "Xml str", xmlMapper.writeValueAsString(person.phones[0]))
 
-        symComManager.sendRequest(
-            SymComStringRequest(
-                "http://mobile.iict.ch/api/xml",
-                XmlMapper().writeValueAsString(Directory(person)),
-                ContentType.XML,
-                RequestMethod.POST
-            )
-        )
+        Log.println(Log.DEBUG, "Xml str", xmlMapper.writeValueAsString(person.phones[0]))
+        
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/xml",
+            XmlMapper().writeValueAsString(Directory(person)),
+            ContentType.XML,
+            RequestMethod.POST,
+            false))
     }
 
     /**
@@ -193,13 +185,10 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
-        symComManager.sendRequest(
-            SymComStringRequest(
-                "http://mobile.iict.ch/api/txt",
-                person.toString(),
-                ContentType.TEXT,
-                RequestMethod.POST
-            )
-        )
+        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
+            person.toString(),
+            ContentType.TEXT,
+            RequestMethod.POST,
+            false))
     }
 }
