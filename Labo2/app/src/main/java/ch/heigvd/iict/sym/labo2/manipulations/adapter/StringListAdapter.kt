@@ -12,15 +12,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.iict.sym.labo2.R
-import ch.heigvd.iict.sym.labo2.manipulations.adapter.BookListAdapter.BookViewHolder
-import ch.heigvd.iict.sym.labo2.models.Book
+import ch.heigvd.iict.sym.labo2.manipulations.adapter.StringListAdapter.BookViewHolder
 
 /**
- * Adapteur d'une liste de livre.
+ * Adapteur d'une liste de livre (liste de titres).
  * Adapté de: https://developer.android.com/guide/topics/ui/layout/recyclerview
- * @param books Liste de livres à adapter.
+ * @param books Liste de titres à adapter.
  */
-class BookListAdapter(private val books: List<Book>) :  RecyclerView.Adapter<BookViewHolder>() {
+class StringListAdapter(private val books: List<String>) :  RecyclerView.Adapter<BookViewHolder>() {
 
     /**
      * Crée une nouvelle vue.
@@ -41,11 +40,11 @@ class BookListAdapter(private val books: List<Book>) :  RecyclerView.Adapter<Boo
      * @param position Index de référence.
      */
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        holder.bookItemView.text = books[position].title
+        holder.bookItemView.text = books[position]
     }
 
     /**
-     * Accède à la taille de la liste de livres.
+     * Accède à la taille de la liste de titres.
      */
     override fun getItemCount() = books.size
 
