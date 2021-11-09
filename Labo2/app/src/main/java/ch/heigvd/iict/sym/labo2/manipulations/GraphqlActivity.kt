@@ -47,6 +47,12 @@ class GraphqlActivity : BaseActivity() {
         authorSpinner = findViewById(R.id.graphql_authors_spinner)
         responseField = findViewById(R.id.graphql_books_recyclerView)
 
+        // Adaptateur vite pour éviter: E/RecyclerView: No adapter attached; skipping layout
+        val bookList: MutableList<Book> = mutableListOf()
+        val adapter = BookListAdapter(bookList)
+        responseField.adapter = adapter
+        responseField.layoutManager = LinearLayoutManager(this@GraphqlActivity)
+
         // Communication
         symComManager = SymComManager(this)
 
