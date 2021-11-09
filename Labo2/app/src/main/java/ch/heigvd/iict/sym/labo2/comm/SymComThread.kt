@@ -58,8 +58,7 @@ class SymComThread(
             connection.setRequestProperty("Content-Type", request.contentType.value)
 
             val outputStream : OutputStream
-            val inputstream : InputStream
-
+          
             if (request.isCompressed) {
                 // Ajout des entêtes spécifiques pour le mode compressé
                 connection.setRequestProperty("X-Network", "CSD")
@@ -67,11 +66,9 @@ class SymComThread(
 
                 // Définition des streams spécifiques pour le mode compressé
                 outputStream = DeflaterOutputStream(connection.outputStream)
-                //inputstream = InflaterInputStream(connection.inputStream)
             } else {
                 // Définition des streams pour les requêts standard
                 outputStream = DataOutputStream(connection.outputStream)
-                //inputstream = DataInputStream(connection.inputStream)
             }
 
             // Envoie les données au serveur
@@ -85,7 +82,7 @@ class SymComThread(
             // Reçoit les données du serveur
             try {
 
-                inputstream = if (request.isCompressed) {
+                val inputstream = if (request.isCompressed) {
                     InflaterInputStream(connection.inputStream)
                 } else {
                     DataInputStream(connection.inputStream)

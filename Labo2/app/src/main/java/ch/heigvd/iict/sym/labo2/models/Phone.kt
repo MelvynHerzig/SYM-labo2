@@ -7,6 +7,7 @@
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
@@ -20,15 +21,17 @@ import java.lang.Exception
 class Phone(
     @JacksonXmlText(value=true)
     val number: String,
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(isAttribute = true)
     val type: Type) {
 
 
     enum class Type(
-        @JacksonXmlProperty(isAttribute = true)
         val type: String) {
+        @JsonProperty("home")
         HOME("home"),
+        @JsonProperty("mobile")
         MOBILE("mobile"),
+        @JsonProperty("work")
         WORK("work");
 
         override fun toString(): String {

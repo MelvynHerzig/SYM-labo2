@@ -104,8 +104,8 @@ class SerializedActivity : BaseActivity() {
             middlenameInput.text.toString(),
             mutableListOf(
                 Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME),
-                Phone(phonenumberInputHome.text.toString(), Phone.Type.MOBILE),
-                Phone(phonenumberInputHome.text.toString(), Phone.Type.WORK)
+                Phone(phonenumberInputMobile.text.toString(), Phone.Type.MOBILE),
+                Phone(phonenumberInputWork.text.toString(), Phone.Type.WORK)
             )
         )
     }
@@ -122,11 +122,15 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
-        symComManager.sendRequest( SymComBytesRequest("http://mobile.iict.ch/api/protobuf",
-            Person.creatingByteArrayForProtobufData(person),
-            ContentType.PROTOBUF,
-            RequestMethod.POST,
-            false))
+        symComManager.sendRequest(
+            SymComBytesRequest(
+                "http://mobile.iict.ch/api/protobuf",
+                Person.creatingByteArrayForProtobufData(person),
+                ContentType.PROTOBUF,
+                RequestMethod.POST,
+                false
+            )
+        )
     }
 
     /**
@@ -141,11 +145,15 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/json",
-            person.toJson(),
-            ContentType.JSON,
-            RequestMethod.POST,
-            false))
+        symComManager.sendRequest(
+            SymComStringRequest(
+                "http://mobile.iict.ch/api/json",
+                person.toJson(),
+                ContentType.JSON,
+                RequestMethod.POST,
+                false
+            )
+        )
     }
 
     /**
@@ -155,23 +163,20 @@ class SerializedActivity : BaseActivity() {
     private fun sendXML(person: Person) {
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
-                responseField.text =
-                    XmlMapper().readValue(String(response), Directory::class.java).person.toString()
+                responseField.text = String(response)
             }
         })
 
-        val xmlMapper = XmlMapper(JacksonXmlModule().apply {
-            setDefaultUseWrapper(false)
-        }).registerKotlinModule()
 
-
-        Log.println(Log.DEBUG, "Xml str", xmlMapper.writeValueAsString(person.phones[0]))
-        
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/xml",
-            XmlMapper().writeValueAsString(Directory(person)),
-            ContentType.XML,
-            RequestMethod.POST,
-            false))
+        symComManager.sendRequest(
+            SymComStringRequest(
+                "http://mobile.iict.ch/api/xml",
+                person.toXml(),
+                ContentType.XML,
+                RequestMethod.POST,
+                false
+            )
+        )
     }
 
     /**
@@ -185,10 +190,14 @@ class SerializedActivity : BaseActivity() {
             }
         })
 
-        symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
-            person.toString(),
-            ContentType.TEXT,
-            RequestMethod.POST,
-            false))
+        symComManager.sendRequest(
+            SymComStringRequest(
+                "http://mobile.iict.ch/api/txt",
+                person.toString(),
+                ContentType.TEXT,
+                RequestMethod.POST,
+                false
+            )
+        )
     }
 }
