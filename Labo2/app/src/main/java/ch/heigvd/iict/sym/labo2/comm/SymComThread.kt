@@ -67,11 +67,11 @@ class SymComThread(
 
                 // Définition des streams spécifiques pour le mode compressé
                 outputStream = DeflaterOutputStream(connection.outputStream)
-                inputstream = InflaterInputStream(connection.inputStream)
+                //inputstream = InflaterInputStream(connection.inputStream)
             } else {
                 // Définition des streams pour les requêts standard
                 outputStream = DataOutputStream(connection.outputStream)
-                inputstream = DataInputStream(connection.inputStream)
+                //inputstream = DataInputStream(connection.inputStream)
             }
 
             // Envoie les données au serveur
@@ -84,6 +84,13 @@ class SymComThread(
 
             // Reçoit les données du serveur
             try {
+
+                inputstream = if (request.isCompressed) {
+                    InflaterInputStream(connection.inputStream)
+                } else {
+                    DataInputStream(connection.inputStream)
+                }
+
                 val bytes = inputstream.readBytes()
                 Handler(Looper.getMainLooper()).post(ResponseRunnable(listener, bytes))
 
