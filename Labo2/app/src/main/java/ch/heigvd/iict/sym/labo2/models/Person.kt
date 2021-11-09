@@ -7,11 +7,24 @@
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import com.google.gson.Gson
 
 /**
  * Classe Modélisant une personne
  */
-class Person(val name: String, val firstname:String, val middlename: String, val phones : MutableList<Phone>) {
+@JacksonXmlRootElement
+class Person(
+    @JacksonXmlProperty
+    val name: String,
+    @JacksonXmlProperty
+    val firstname:String,
+    @JacksonXmlProperty
+    val middlename: String,
+    @JacksonXmlElementWrapper(useWrapping = false)
+    val phones : List<Phone>) {
 
     override fun toString(): String {
         val s = StringBuilder()
@@ -25,6 +38,10 @@ class Person(val name: String, val firstname:String, val middlename: String, val
             s.append("\n")
         }
         return s.toString()
+    }
+
+    fun toJson() : String {
+        return Gson().toJson(this)
     }
 
     companion object {
@@ -62,6 +79,10 @@ class Person(val name: String, val firstname:String, val middlename: String, val
          */
         fun parsingDirectoryByteArrayData(byteArray : ByteArray) : String {
             return DirectoryOuterClass.Directory.parseFrom(byteArray).toString()
+        }
+
+        fun fromJson(jsonStr : String) : Person{
+            return Gson().fromJson(jsonStr, Person::class.java)
         }
     }
 }

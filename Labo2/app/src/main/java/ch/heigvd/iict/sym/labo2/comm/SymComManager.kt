@@ -129,7 +129,7 @@ class SymComManager(context: Context, private val debug: Boolean = false) {
     private fun responseIfDebug(message: String, listener: WeakReference<CommunicationEventListener>){
         if(debug) {
             Handler(Looper.getMainLooper()).post {
-                listener.get()?.handleServerResponse(message)
+                listener.get()?.handleServerResponse(message.toByteArray())
             }
         }
     }

@@ -7,27 +7,38 @@
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import java.lang.Exception
 
 /**
  * Classe Modélisant un numéro de téléphone avec un certain "type"
  */
-class Phone(val number: String, val type: Type) {
-    enum class Type{
+@JacksonXmlRootElement(localName = "phone")
+class Phone(
+    @JacksonXmlText(value=true)
+    val number: String,
+    @JacksonXmlProperty(isAttribute = true)
+    val type: Type) {
+    enum class Type {
         HOME,
         MOBILE,
         WORK
     }
 
     override fun toString(): String {
-        return "Phone #: " + number + getStringPhoneType(type)
+
+        val typeStr = if (type == null)  "" else getStringPhoneType(type)
+        return "Phone #: $number $typeStr"
     }
 
     /**
      * Créé un objet Phone pour le Protocol Buffer
      * en fonction des données de l'objet Phone
      */
-    fun createProtobufPhone() : DirectoryOuterClass.Phone {
+    fun createProtobufPhone(): DirectoryOuterClass.Phone {
         return DirectoryOuterClass.Phone.newBuilder()
             .setType(getDirectoryPhoneType(type))
             .setNumber(number)
@@ -38,7 +49,7 @@ class Phone(val number: String, val type: Type) {
         /**
          * Réalise la correspondance entre le Type du Protocol Buffer et le type du téléphone
          */
-        fun getDirectoryPhoneType(type : Type) : DirectoryOuterClass.Phone.Type {
+        fun getDirectoryPhoneType(type: Type): DirectoryOuterClass.Phone.Type {
             return when (type) {
                 Type.HOME -> DirectoryOuterClass.Phone.Type.HOME
                 Type.MOBILE -> DirectoryOuterClass.Phone.Type.MOBILE
@@ -49,7 +60,7 @@ class Phone(val number: String, val type: Type) {
         /**
          * Retourne le Phone Type en fonction Type de téléphone du Protocol Buffer
          */
-        fun getPhoneType(type : DirectoryOuterClass.Phone.Type) : Type {
+        fun getPhoneType(type: DirectoryOuterClass.Phone.Type): Type {
             return when (type) {
                 DirectoryOuterClass.Phone.Type.HOME -> Type.HOME
                 DirectoryOuterClass.Phone.Type.MOBILE -> Type.MOBILE
@@ -61,7 +72,7 @@ class Phone(val number: String, val type: Type) {
         /**
          * Retourne un string en fonction Type de téléphone du Protocol Buffer
          */
-        fun getStringPhoneType(type : Type) : String {
+        fun getStringPhoneType(type: Type): String {
             return when (type) {
                 Type.HOME -> "Home"
                 Type.MOBILE -> "Mobile"
