@@ -46,8 +46,10 @@ class SymComThread(
 
         connection.connectTimeout = 300000
 
+        val postData : ByteArray
+
         try {
-            val postData = request.getBytesFromBody()
+            postData = request.getBytesFromBody()
 
             connection.requestMethod = request.requestMethod.value
             connection.doOutput = request.requestMethod != RequestMethod.GET
@@ -57,17 +59,22 @@ class SymComThread(
 
             val outputStream : OutputStream
             val inputstream : InputStream
+
             if (request.isCompressed) {
+                // Ajout des entêtes spécifiques pour le mode compressé
                 connection.setRequestProperty("X-Network", "CSD")
                 connection.setRequestProperty("X-Content-Encoding", "deflate")
 
+                // Définition des streams spécifiques pour le mode compressé
                 outputStream = DeflaterOutputStream(connection.outputStream)
                 inputstream = InflaterInputStream(connection.inputStream)
             } else {
+                // Définition des streams pour les requêts standard
                 outputStream = DataOutputStream(connection.outputStream)
                 inputstream = DataInputStream(connection.inputStream)
             }
 
+            // Envoie les données au serveur
             try {
                 outputStream.write(postData)
                 outputStream.flush()
@@ -75,6 +82,7 @@ class SymComThread(
                 exception.printStackTrace()
             }
 
+            // Reçoit les données du serveur
             try {
                 val bytes = inputstream.readBytes()
                 Handler(Looper.getMainLooper()).post(ResponseRunnable(listener, bytes))
