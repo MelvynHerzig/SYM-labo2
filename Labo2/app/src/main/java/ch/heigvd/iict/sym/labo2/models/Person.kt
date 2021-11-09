@@ -7,9 +7,11 @@
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.gson.Gson
 
 /**
@@ -42,6 +44,10 @@ class Person(
 
     fun toJson() : String {
         return Gson().toJson(this)
+    }
+
+    fun toXml(): String{
+        return XmlMapper().registerKotlinModule().writeValueAsString(Directory(this))
     }
 
     companion object {

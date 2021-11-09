@@ -172,7 +172,7 @@ class SerializedActivity : BaseActivity() {
         symComManager.sendRequest(
             SymComStringRequest(
                 "http://mobile.iict.ch/api/xml",
-                XmlMapper().registerKotlinModule().writeValueAsString(Directory(person)),
+                person.toXml(),
                 ContentType.XML,
                 RequestMethod.POST,
                 false
