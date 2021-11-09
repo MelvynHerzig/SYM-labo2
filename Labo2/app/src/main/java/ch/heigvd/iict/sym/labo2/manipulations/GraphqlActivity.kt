@@ -113,7 +113,9 @@ class GraphqlActivity : BaseActivity() {
             }
         })
         // Envoie de la demande des autheurs
-        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\":\"{findAllAuthors{id, name}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql",
+            "{\"query\":\"{findAllAuthors{id, name}}\"}",
+            ContentType.JSON, RequestMethod.POST, false))
     }
 
     /**
@@ -148,6 +150,8 @@ class GraphqlActivity : BaseActivity() {
         })
 
         // Envoie de la demande des livres
-        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql", "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}", ContentType.JSON, RequestMethod.POST))
+        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql",
+            "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}",
+            ContentType.JSON, RequestMethod.POST, false))
     }
 }

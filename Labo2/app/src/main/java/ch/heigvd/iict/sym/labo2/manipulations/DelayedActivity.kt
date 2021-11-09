@@ -65,7 +65,8 @@ class DelayedActivity : BaseActivity() {
                     "http://mobile.iict.ch/api/txt",
                     userInput.text.toString(),
                     ContentType.TEXT,
-                    RequestMethod.POST
+                    RequestMethod.POST,
+                    false
                 )
             )
         }
