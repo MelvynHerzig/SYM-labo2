@@ -16,9 +16,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import ch.heigvd.iict.sym.labo2.comm.*
-import ch.heigvd.iict.sym.labo2.manipulations.adapter.BookListAdapter
+import ch.heigvd.iict.sym.labo2.manipulations.adapter.StringListAdapter
 import ch.heigvd.iict.sym.labo2.models.Author
-import ch.heigvd.iict.sym.labo2.models.Book
 import org.json.JSONObject
 
 
@@ -48,8 +47,8 @@ class GraphqlActivity : BaseActivity() {
         responseField = findViewById(R.id.graphql_books_recyclerView)
 
         // Adaptateur vite pour éviter: E/RecyclerView: No adapter attached; skipping layout
-        val bookList: MutableList<Book> = mutableListOf()
-        val adapter = BookListAdapter(bookList)
+        val bookList: MutableList<String> = mutableListOf()
+        val adapter = StringListAdapter(bookList)
         responseField.adapter = adapter
         responseField.layoutManager = LinearLayoutManager(this@GraphqlActivity)
 
@@ -136,16 +135,11 @@ class GraphqlActivity : BaseActivity() {
                 // Transformation des livres JSON en livres Kotlin
                 for (i in 0 until booksFromAuthor.length()) {
                     val o = booksFromAuthor.getJSONObject(i)
-                    bookList.add(
-                        Book(
-                            o.getInt("id"),
-                            o.getString("title")
-                        )
-                    )
+                    bookList.add(o.getString("title"))
                 }
 
                 // Adaptation de la liste de livres
-                val adapter = BookListAdapter(bookList)
+                val adapter = StringListAdapter(bookList)
                 responseField.adapter = adapter
                 responseField.layoutManager = LinearLayoutManager(this@GraphqlActivity)
             }
