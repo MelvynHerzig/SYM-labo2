@@ -47,21 +47,21 @@
             android:id="@+id/serialize_phone_number_input_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/str_enter_phone_number"
+            android:hint="@string/str_enter_phone_number_home"
             android:inputType="phone" />
 
         <EditText
             android:id="@+id/serialize_phone_number_input_mobile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/str_enter_phone_number"
+            android:hint="@string/str_enter_phone_number_mobile"
             android:inputType="phone" />
 
         <EditText
             android:id="@+id/serialize_phone_number_input_work"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/str_enter_phone_number"
+            android:hint="@string/str_enter_phone_number_work"
             android:inputType="phone" />
 
 

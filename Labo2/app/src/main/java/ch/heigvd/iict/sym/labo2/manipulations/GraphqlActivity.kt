@@ -130,7 +130,7 @@ class GraphqlActivity : BaseActivity() {
                 // Récupération de la réponse sous forme d'un tableau de livres
                 val booksFromAuthor = JSONObject(String(response)).getJSONObject("data")
                     .getJSONObject("findAuthorById").getJSONArray("books")
-                val bookList: MutableList<Book> = mutableListOf()
+                val bookList: MutableList<String> = mutableListOf()
 
                 // Transformation des livres JSON en livres Kotlin
                 for (i in 0 until booksFromAuthor.length()) {

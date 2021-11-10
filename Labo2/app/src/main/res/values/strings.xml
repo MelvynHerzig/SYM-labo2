@@ -16,7 +16,9 @@
     <string name="str_enter_name">Enter your name</string>
     <string name="str_enter_firstname">Enter your firstname</string>
     <string name="str_enter_middlename">Enter your middlename</string>
-    <string name="str_enter_phone_number">Enter your phone number</string>
+    <string name="str_enter_phone_number_home">Enter your home phone number</string>
+    <string name="str_enter_phone_number_mobile">Enter your mobile phone number</string>
+    <string name="str_enter_phone_number_work">Enter your work phone number</string>
   
     <string name="str_authors_loading">Authors loading</string>
     <string name="str_authors_loaded">Authors loaded</string>
