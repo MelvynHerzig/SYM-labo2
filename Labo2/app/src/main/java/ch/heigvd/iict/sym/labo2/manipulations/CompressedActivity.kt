@@ -16,6 +16,7 @@ import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
+import ch.heigvd.iict.sym.labo2.models.Person
 
 /**
  * Activité implémentant le protocole de communication compressé.
@@ -42,9 +43,8 @@ class CompressedActivity : BaseActivity() {
 
         symComManager = SymComManager(this)
         symComManager.setCommunicationEventListener( object : CommunicationEventListener {
-
             override fun handleServerResponse(response: ByteArray) {
-                throw Exception("Not implemented yet")
+                responseField.text = String(response)
             }
         })
 
@@ -53,15 +53,15 @@ class CompressedActivity : BaseActivity() {
                 return@setOnClickListener
             }
             responseField.text = getString(R.string.str_waiting_server)
-            // TODO: compresser et changer les entêtes
-            // X-Network: CSD
-            // X-Content-Encoding: deflate
-            // Envoyer via: DeflaterOutputStream (package java.util.zip)
-            // Recevoir via: InflaterInputStream
-            symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/zip",
-                userInput.text.toString(),
-                ContentType.TEXT,
-                RequestMethod.POST)
+
+            symComManager.sendRequest(
+                SymComStringRequest(
+                    URL_API_TEXT,
+                    userInput.text.toString(),
+                    ContentType.TEXT,
+                    RequestMethod.POST,
+                    true
+                )
             )
         }
     }

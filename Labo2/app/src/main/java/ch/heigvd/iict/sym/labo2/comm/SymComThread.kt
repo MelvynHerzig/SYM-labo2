@@ -7,6 +7,10 @@ import java.io.*
 import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.zip.Deflater
+import java.util.zip.DeflaterOutputStream
+import java.util.zip.Inflater
+import java.util.zip.InflaterInputStream
 
 /**
  * Classe implémentant un thread de communication http pour le SymComManager
@@ -44,32 +48,55 @@ class SymComThread(
 
         connection.connectTimeout = 300000
 
+        val postData : ByteArray
+
         try {
-            val postData = request.getBytesFromBody()
+            postData = request.getBytesFromBody()
 
             connection.requestMethod = request.requestMethod.value
             connection.doOutput = request.requestMethod != RequestMethod.GET
             connection.setRequestProperty("charset", "utf-8")
-            connection.setRequestProperty("Content-length", postData.size.toString())
             connection.setRequestProperty("Content-Type", request.contentType.value)
 
+            val outputStream : OutputStream
 
+            if (request.isCompressed) {
+                // Ajout des entêtes spécifiques pour le mode compressé
+                connection.setRequestProperty("X-Network", "CSD")
+                connection.setRequestProperty("X-Content-Encoding", "deflate")
+
+                // Définition des streams spécifiques pour le mode compressé
+                outputStream = DeflaterOutputStream(connection.outputStream, Deflater(Deflater.DEFAULT_COMPRESSION, true))
+            } else {
+                // Définition des streams pour les requêts standard
+                outputStream = DataOutputStream(connection.outputStream)
+            }
+
+            // Envoie les données au serveur
             try {
-                val outputStream = DataOutputStream(connection.outputStream)
                 outputStream.write(postData)
                 outputStream.flush()
             } catch (exception: Exception) {
                 exception.printStackTrace()
+            } finally {
+                outputStream.close()
             }
 
-            try {
-                val inputstream = DataInputStream(connection.inputStream)
+            val inputstream = if (request.isCompressed) {
+                InflaterInputStream(connection.inputStream, Inflater(true))
+            } else {
+                DataInputStream(connection.inputStream)
+            }
 
+            // Reçoit les données du serveur
+            try {
                 val bytes = inputstream.readBytes()
                 Handler(Looper.getMainLooper()).post(ResponseRunnable(listener, bytes))
 
             } catch (exception: Exception) {
                 exception.printStackTrace()
+            } finally {
+                inputstream.close()
             }
 
         } catch (e: Exception) {
