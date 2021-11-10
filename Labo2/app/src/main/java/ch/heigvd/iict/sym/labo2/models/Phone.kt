@@ -37,6 +37,10 @@ class Phone(
         override fun toString(): String {
             return type
         }
+
+        companion object {
+            fun from(type: String?): Type = values().find { it.type == type } ?: Type.HOME
+        }
     }
 
     override fun toString(): String {
@@ -44,6 +48,7 @@ class Phone(
         val typeStr = if (type == null)  "" else getStringPhoneType(type)
         return "Phone #: $number $typeStr"
     }
+
 
     /**
      * Créé un objet Phone pour le Protocol Buffer
