@@ -9,6 +9,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
+import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
 
 /**
@@ -55,7 +56,6 @@ class SymComThread(
             connection.requestMethod = request.requestMethod.value
             connection.doOutput = request.requestMethod != RequestMethod.GET
             connection.setRequestProperty("charset", "utf-8")
-            //connection.setRequestProperty("Content-length", postData.size.toString())
             connection.setRequestProperty("Content-Type", request.contentType.value)
 
             val outputStream : OutputStream
@@ -78,10 +78,12 @@ class SymComThread(
                 outputStream.flush()
             } catch (exception: Exception) {
                 exception.printStackTrace()
+            } finally {
+                outputStream.close()
             }
 
             val inputstream = if (request.isCompressed) {
-                InflaterInputStream(connection.inputStream)
+                InflaterInputStream(connection.inputStream, Inflater(true))
             } else {
                 DataInputStream(connection.inputStream)
             }
@@ -93,6 +95,8 @@ class SymComThread(
 
             } catch (exception: Exception) {
                 exception.printStackTrace()
+            } finally {
+                inputstream.close()
             }
 
         } catch (e: Exception) {

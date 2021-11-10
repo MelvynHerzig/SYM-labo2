@@ -124,7 +124,7 @@ class SerializedActivity : BaseActivity() {
 
         symComManager.sendRequest(
             SymComBytesRequest(
-                "http://mobile.iict.ch/api/protobuf",
+                URL_API_PROTOBUF,
                 Person.creatingByteArrayForProtobufData(person),
                 ContentType.PROTOBUF,
                 RequestMethod.POST,
@@ -147,7 +147,7 @@ class SerializedActivity : BaseActivity() {
 
         symComManager.sendRequest(
             SymComStringRequest(
-                "http://mobile.iict.ch/api/json",
+                URL_API_JSON,
                 person.toJson(),
                 ContentType.JSON,
                 RequestMethod.POST,
@@ -170,7 +170,7 @@ class SerializedActivity : BaseActivity() {
 
         symComManager.sendRequest(
             SymComStringRequest(
-                "http://mobile.iict.ch/api/xml",
+                URL_API_XML,
                 person.toXml(),
                 ContentType.XML,
                 RequestMethod.POST,
@@ -192,7 +192,7 @@ class SerializedActivity : BaseActivity() {
 
         symComManager.sendRequest(
             SymComStringRequest(
-                "http://mobile.iict.ch/api/txt",
+                URL_API_TEXT,
                 person.toString(),
                 ContentType.TEXT,
                 RequestMethod.POST,

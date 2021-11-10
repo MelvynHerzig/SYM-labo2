@@ -35,7 +35,7 @@ class Person(
         s.append(
             "Person name: " + name +
                     "\nPerson firstname: " + firstname +
-                    "\nPerson middlename: " + middlename
+                    "\nPerson middlename: " + middlename + "\n"
         )
 
         for (phone in phone) {
@@ -86,10 +86,32 @@ class Person(
         }
 
         /**
+         * Transforme un objet Directory de Protocol Buffer en String
+         */
+        private fun protobufDirectoryToString(directory : DirectoryOuterClass.Directory) : String {
+
+            val s = StringBuilder()
+
+            for (person in directory.resultsList) {
+
+                val phonesToAdd = mutableListOf<Phone>()
+
+                for (phoneNumber in person.phoneList) {
+                    phonesToAdd.add(Phone(phoneNumber.number, Phone.getPhoneType(phoneNumber.type)))
+                }
+
+                val p = Person(person.name, person.firstname, person.middlename, phonesToAdd)
+                s.append(p)
+            }
+
+            return s.toString()
+        }
+
+        /**
          * Transforme un ByteArray en string en l'analysant
          */
         fun parsingDirectoryByteArrayData(byteArray: ByteArray): String {
-            return DirectoryOuterClass.Directory.parseFrom(byteArray).toString()
+            return protobufDirectoryToString(DirectoryOuterClass.Directory.parseFrom(byteArray))
         }
 
         fun fromJson(jsonStr: String): Person {

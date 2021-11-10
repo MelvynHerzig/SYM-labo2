@@ -87,7 +87,8 @@ class GraphqlActivity : BaseActivity() {
 
             override fun handleServerResponse(response: ByteArray) {
                 // Récupération de la réponse sous forme d'un tableau d'autheurs
-                val allAuthors = JSONObject(String(response)).getJSONObject("data").getJSONArray("findAllAuthors")
+                val allAuthors = JSONObject(String(response)).getJSONObject("data")
+                    .getJSONArray("findAllAuthors")
                 val authorsList: MutableList<Author> = mutableListOf()
 
                 // Transformation des autheurs JSON en autheur Kotlin
@@ -113,7 +114,7 @@ class GraphqlActivity : BaseActivity() {
             }
         })
         // Envoie de la demande des autheurs
-        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql",
+        symComManager.sendRequest(SymComStringRequest(URL_API_GRAPHQL,
             "{\"query\":\"{findAllAuthors{id, name}}\"}",
             ContentType.JSON, RequestMethod.POST, false))
     }
@@ -128,7 +129,8 @@ class GraphqlActivity : BaseActivity() {
 
             override fun handleServerResponse(response: ByteArray) {
                 // Récupération de la réponse sous forme d'un tableau de livres
-                val booksFromAuthor = JSONObject(String(response)).getJSONObject("data").getJSONObject("findAuthorById").getJSONArray("books")
+                val booksFromAuthor = JSONObject(String(response)).getJSONObject("data")
+                    .getJSONObject("findAuthorById").getJSONArray("books")
                 val bookList: MutableList<Book> = mutableListOf()
 
                 // Transformation des livres JSON en livres Kotlin
@@ -150,7 +152,7 @@ class GraphqlActivity : BaseActivity() {
         })
 
         // Envoie de la demande des livres
-        symComManager.sendRequest(SymComStringRequest("http://mobile.iict.ch/graphql",
+        symComManager.sendRequest(SymComStringRequest(URL_API_GRAPHQL,
             "{\"query\": \"{findAuthorById(id: ${author.id}){books{id, title}}}\"}",
             ContentType.JSON, RequestMethod.POST, false))
     }

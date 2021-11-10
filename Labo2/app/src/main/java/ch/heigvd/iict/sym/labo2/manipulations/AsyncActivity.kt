@@ -60,7 +60,8 @@ class AsyncActivity : BaseActivity() {
                 return@setOnClickListener
             }
             responseField.text = getString(R.string.str_waiting_server)
-            symComManager.sendRequest( SymComStringRequest("http://mobile.iict.ch/api/txt",
+            symComManager.sendRequest( SymComStringRequest(
+                    URL_API_TEXT,
                     userInput.text.toString(),
                     ContentType.TEXT,
                     RequestMethod.POST,

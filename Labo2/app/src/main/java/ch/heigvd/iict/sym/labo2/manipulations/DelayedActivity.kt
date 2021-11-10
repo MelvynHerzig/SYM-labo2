@@ -62,7 +62,7 @@ class DelayedActivity : BaseActivity() {
 
             symComManager.sendRequest(
                 SymComStringRequest(
-                    "http://mobile.iict.ch/api/txt",
+                    URL_API_TEXT,
                     userInput.text.toString(),
                     ContentType.TEXT,
                     RequestMethod.POST,
