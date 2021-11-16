@@ -7,7 +7,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Queue
+import java.util.Timer
+import java.util.TimerTask
+import java.util.LinkedList
+
 
 /**
  * Classe responsable de gérer la communication avec le thread de communication SymComThead

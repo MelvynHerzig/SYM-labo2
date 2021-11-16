@@ -6,9 +6,7 @@ import ch.heigvd.iict.sym.labo2.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.models.Person
 import ch.heigvd.iict.sym.labo2.models.Phone
-import android.widget.ArrayAdapter
 import ch.heigvd.iict.sym.labo2.comm.*
-
 
 /**
  * Activité implémentant le protocole de communication sérialisé.
