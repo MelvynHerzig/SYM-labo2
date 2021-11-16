@@ -1,8 +1,3 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
@@ -10,12 +5,15 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
-import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
+import ch.heigvd.iict.sym.labo2.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import ch.heigvd.iict.sym.labo2.comm.*
+import ch.heigvd.iict.sym.labo2.comm.ContentType
+import ch.heigvd.iict.sym.labo2.comm.RequestMethod
+import ch.heigvd.iict.sym.labo2.comm.SymComManager
+import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
 import ch.heigvd.iict.sym.labo2.manipulations.adapter.StringListAdapter
 import ch.heigvd.iict.sym.labo2.models.Author
 import org.json.JSONObject
@@ -25,6 +23,9 @@ import org.json.JSONObject
  * Activité implémentant une communication avec graphQL.
  * Affiche une liste d'autheur dans un spinner et lorsque un
  * autheur est sélectionné, ses oeuvres sont affichées dans un recyclerView.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 class GraphqlActivity : BaseActivity() {
 
@@ -113,9 +114,11 @@ class GraphqlActivity : BaseActivity() {
             }
         })
         // Envoie de la demande des autheurs
-        symComManager.sendRequest(SymComStringRequest(URL_API_GRAPHQL,
+        symComManager.sendRequest(
+            SymComStringRequest(URL_API_GRAPHQL,
             "{\"query\":\"{findAllAuthors{id, name}}\"}",
-            ContentType.JSON, RequestMethod.POST, false))
+            ContentType.JSON, RequestMethod.POST, false)
+        )
     }
 
     /**

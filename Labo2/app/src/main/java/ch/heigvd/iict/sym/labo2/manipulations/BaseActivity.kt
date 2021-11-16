@@ -1,9 +1,3 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +5,9 @@ import ch.heigvd.iict.sym.labo2.comm.SymComManager
 
 /**
  * Activité de base pour notre programme définissant les méthodes communes éléments communs.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 abstract class BaseActivity : AppCompatActivity() {
 

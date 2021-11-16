@@ -1,32 +1,19 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
-import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
+import ch.heigvd.iict.sym.labo2.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.models.Person
 import ch.heigvd.iict.sym.labo2.models.Phone
-import android.widget.ArrayAdapter
 import ch.heigvd.iict.sym.labo2.comm.*
-import ch.heigvd.iict.sym.labo2.models.Directory
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import org.xml.sax.InputSource
-import java.io.StringReader
-import javax.xml.parsers.DocumentBuilderFactory
-
 
 /**
  * Activité implémentant le protocole de communication sérialisé.
  * Les protocoles pouvant être utiliser sont JSON, XML et Protocol Buffer
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 class SerializedActivity : BaseActivity() {
 
@@ -85,31 +72,54 @@ class SerializedActivity : BaseActivity() {
         symComManager = SymComManager(this)
 
         sendButton.setOnClickListener {
-            responseField.text = getString(R.string.str_waiting_server)
+
             val person = createPersonFromForm()
 
-            when (requestTypeSpinner.selectedItem) {
-                ContentType.JSON -> sendJSON(person)
-                ContentType.PROTOBUF -> sendProtobuf(person)
-                ContentType.XML -> sendXML(person)
-                ContentType.TEXT -> sendText(person)
+            if (person != null) {
+                responseField.text = getString(R.string.str_waiting_server)
+
+                when (requestTypeSpinner.selectedItem) {
+                    ContentType.JSON -> sendJSON(person)
+                    ContentType.PROTOBUF -> sendProtobuf(person)
+                    ContentType.XML -> sendXML(person)
+                    ContentType.TEXT -> sendText(person)
+                }
+
+
             }
+            Toast.makeText(baseContext, "Des champs n'ont pas été rempli", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
     /**
      * Constuit un objet Person avec les valeurs des champs textes
      */
-    private fun createPersonFromForm(): Person {
+    private fun createPersonFromForm(): Person? {
+
+        val phones = mutableListOf<Phone>()
+
+        if (nameInput.text.isEmpty() || firstnameInput.text.isEmpty() || middlenameInput.text.isEmpty()) {
+            return null
+        }
+
+        if (!phonenumberInputHome.text.isEmpty()) {
+            phones.add(Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME))
+        }
+
+        if (!phonenumberInputMobile.text.isEmpty()) {
+            phones.add(Phone(phonenumberInputMobile.text.toString(), Phone.Type.MOBILE))
+        }
+
+        if (!phonenumberInputWork.text.isEmpty()) {
+            phones.add(Phone(phonenumberInputWork.text.toString(), Phone.Type.WORK))
+        }
+
         return Person(
             nameInput.text.toString(),
             firstnameInput.text.toString(),
             middlenameInput.text.toString(),
-            mutableListOf(
-                Phone(phonenumberInputHome.text.toString(), Phone.Type.HOME),
-                Phone(phonenumberInputMobile.text.toString(), Phone.Type.MOBILE),
-                Phone(phonenumberInputWork.text.toString(), Phone.Type.WORK)
-            )
+            phones
         )
     }
 
@@ -144,7 +154,7 @@ class SerializedActivity : BaseActivity() {
 
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
-                responseField.text = String(response)
+                responseField.text = Person.fromJson(String(response)).toString()
             }
         })
 

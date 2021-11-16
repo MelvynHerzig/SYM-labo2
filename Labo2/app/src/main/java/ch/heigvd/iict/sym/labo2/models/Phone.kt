@@ -1,14 +1,7 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
@@ -16,21 +9,30 @@ import java.lang.Exception
 
 /**
  * Classe Modélisant un numéro de téléphone avec un certain "type"
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 @JacksonXmlRootElement(localName = "phone")
 class Phone(
-    @JacksonXmlText(value=true)
+    // Décoration pour ne pas avoir une balise <number> en XML
+    @JacksonXmlText(value = true)
     val number: String,
+    // Décoration pour spécifier que le type doit être spécifié en attribut de <phone>
     @JacksonXmlProperty(isAttribute = true)
-    val type: Type) {
+    val type: Type
+) {
 
 
     enum class Type(
-        val type: String) {
+        val type: String
+    ) {
         @JsonProperty("home")
         HOME("home"),
+
         @JsonProperty("mobile")
         MOBILE("mobile"),
+
         @JsonProperty("work")
         WORK("work");
 
@@ -38,14 +40,17 @@ class Phone(
             return type
         }
 
+        /**
+         * Récupère la bonne valeur de l'enum en fonction de la string envoyée
+         */
         companion object {
             fun from(type: String?): Type = values().find { it.type == type } ?: Type.HOME
         }
     }
 
     override fun toString(): String {
-
-        val typeStr = if (type == null)  "" else getStringPhoneType(type)
+        // La réception de l'enum avec "MODIFIED" ne permet pas le matching, et donc type peut être null
+        val typeStr = if (type == null) "" else type.type
         return "Phone #: $number $typeStr"
     }
 
@@ -82,17 +87,6 @@ class Phone(
                 DirectoryOuterClass.Phone.Type.MOBILE -> Type.MOBILE
                 DirectoryOuterClass.Phone.Type.WORK -> Type.WORK
                 else -> throw Exception("Bad Phone Type")
-            }
-        }
-
-        /**
-         * Retourne un string en fonction Type de téléphone du Protocol Buffer
-         */
-        fun getStringPhoneType(type: Type): String {
-            return when (type) {
-                Type.HOME -> "Home"
-                Type.MOBILE -> "Mobile"
-                Type.WORK -> "Work"
             }
         }
     }

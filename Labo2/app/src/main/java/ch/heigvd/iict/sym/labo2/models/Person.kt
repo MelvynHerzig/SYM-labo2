@@ -1,9 +1,3 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.models
 
 import ch.heigvd.iict.sym.labo2.protobuf.DirectoryOuterClass
@@ -19,6 +13,9 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 /**
  * Classe Modélisant une personne
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 @JacksonXmlRootElement
 class Person(
@@ -28,6 +25,7 @@ class Person(
     val firstname: String,
     @JacksonXmlProperty
     val middlename: String,
+    // Décoration permettant de ne pas wrapper les <phone> dans un élément <phones>
     @JacksonXmlElementWrapper(useWrapping = false, localName = "phone")
     val phone: List<Phone>
 ) {
@@ -48,10 +46,16 @@ class Person(
         return s.toString()
     }
 
+    /**
+     * Converti la Person en JSON
+     */
     fun toJson(): String {
         return Gson().toJson(this)
     }
 
+    /**
+     * Converti la Person en XML
+     */
     fun toXml(): String {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<!DOCTYPE directory SYSTEM \"http://mobile.iict.ch/directory.dtd\">" +
@@ -117,10 +121,17 @@ class Person(
             return protobufDirectoryToString(DirectoryOuterClass.Directory.parseFrom(byteArray))
         }
 
+        /**
+         * Parse le JSON afin de recréer un objet Person
+         */
         fun fromJson(jsonStr: String): Person {
             return Gson().fromJson(jsonStr, Person::class.java)
         }
 
+        /**
+         * Parse le XML afin de recréer un objet Person
+         * Note : Obligé de parser à la main, car l'enum pose de gros problème en utilisant Jackson
+         */
         fun fromXML(xmlStr: String): Person {
             val docb = DocumentBuilderFactory.newInstance()
             val doc = docb.newDocumentBuilder()

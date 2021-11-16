@@ -3,6 +3,13 @@
 
 package ch.heigvd.iict.sym.labo2.protobuf;
 
+/**
+ * Classe générée automatiquement pour la communication
+ * via le Protocol Buffer
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
+ */
 public final class DirectoryOuterClass {
   private DirectoryOuterClass() {}
   public static void registerAllExtensions(

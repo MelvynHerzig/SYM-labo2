@@ -1,11 +1,5 @@
 package ch.heigvd.iict.sym.labo2.manipulations.adapter
 
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +12,9 @@ import ch.heigvd.iict.sym.labo2.manipulations.adapter.StringListAdapter.BookView
  * Adapteur d'une liste de livre (liste de titres).
  * Adapté de: https://developer.android.com/guide/topics/ui/layout/recyclerview
  * @param books Liste de titres à adapter.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 class StringListAdapter(private val books: List<String>) :  RecyclerView.Adapter<BookViewHolder>() {
 
