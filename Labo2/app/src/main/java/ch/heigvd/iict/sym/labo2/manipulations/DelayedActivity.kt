@@ -12,7 +12,10 @@ import android.widget.EditText
 import android.widget.TextView
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
-import ch.heigvd.iict.sym.labo2.comm.*
+import ch.heigvd.iict.sym.labo2.comm.ContentType
+import ch.heigvd.iict.sym.labo2.comm.RequestMethod
+import ch.heigvd.iict.sym.labo2.comm.SymComManager
+import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
 
 /**
  * Activité implémentant le protocole de communication retardé.

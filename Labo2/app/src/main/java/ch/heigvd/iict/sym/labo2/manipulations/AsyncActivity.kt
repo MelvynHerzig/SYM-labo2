@@ -16,8 +16,6 @@ import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
-import ch.heigvd.iict.sym.labo2.models.Person
-import java.lang.Error
 
 /**
  * Activité implémentant le protocole de communication asynchrone.

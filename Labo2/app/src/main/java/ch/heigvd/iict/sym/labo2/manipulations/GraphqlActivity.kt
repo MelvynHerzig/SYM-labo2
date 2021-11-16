@@ -15,7 +15,10 @@ import ch.heigvd.iict.sym.labo2.R
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import ch.heigvd.iict.sym.labo2.comm.*
+import ch.heigvd.iict.sym.labo2.comm.ContentType
+import ch.heigvd.iict.sym.labo2.comm.RequestMethod
+import ch.heigvd.iict.sym.labo2.comm.SymComManager
+import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
 import ch.heigvd.iict.sym.labo2.manipulations.adapter.StringListAdapter
 import ch.heigvd.iict.sym.labo2.models.Author
 import org.json.JSONObject
@@ -113,9 +116,11 @@ class GraphqlActivity : BaseActivity() {
             }
         })
         // Envoie de la demande des autheurs
-        symComManager.sendRequest(SymComStringRequest(URL_API_GRAPHQL,
+        symComManager.sendRequest(
+            SymComStringRequest(URL_API_GRAPHQL,
             "{\"query\":\"{findAllAuthors{id, name}}\"}",
-            ContentType.JSON, RequestMethod.POST, false))
+            ContentType.JSON, RequestMethod.POST, false)
+        )
     }
 
     /**

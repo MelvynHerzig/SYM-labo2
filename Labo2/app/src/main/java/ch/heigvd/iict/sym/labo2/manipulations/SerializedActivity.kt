@@ -7,22 +7,12 @@
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.models.Person
 import ch.heigvd.iict.sym.labo2.models.Phone
-import android.widget.ArrayAdapter
 import ch.heigvd.iict.sym.labo2.comm.*
-import ch.heigvd.iict.sym.labo2.models.Directory
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import org.xml.sax.InputSource
-import java.io.StringReader
-import javax.xml.parsers.DocumentBuilderFactory
-
 
 /**
  * Activité implémentant le protocole de communication sérialisé.

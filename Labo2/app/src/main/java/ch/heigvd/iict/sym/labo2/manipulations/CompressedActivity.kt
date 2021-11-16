@@ -16,7 +16,6 @@ import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
-import ch.heigvd.iict.sym.labo2.models.Person
 
 /**
  * Activité implémentant le protocole de communication compressé.
