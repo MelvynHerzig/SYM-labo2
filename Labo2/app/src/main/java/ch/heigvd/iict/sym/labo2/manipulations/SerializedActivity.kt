@@ -19,6 +19,9 @@ import ch.heigvd.iict.sym.labo2.models.Directory
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import org.xml.sax.InputSource
+import java.io.StringReader
+import javax.xml.parsers.DocumentBuilderFactory
 
 
 /**
@@ -163,7 +166,7 @@ class SerializedActivity : BaseActivity() {
     private fun sendXML(person: Person) {
         symComManager.setCommunicationEventListener(object : CommunicationEventListener {
             override fun handleServerResponse(response: ByteArray) {
-                responseField.text = String(response)
+                responseField.text = Person.fromXML(String(response)).toString()
             }
         })
 

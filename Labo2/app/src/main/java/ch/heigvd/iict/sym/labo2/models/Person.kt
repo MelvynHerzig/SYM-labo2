@@ -13,6 +13,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.gson.Gson
+import org.xml.sax.InputSource
+import java.io.StringReader
+import javax.xml.parsers.DocumentBuilderFactory
 
 /**
  * Classe Modélisant une personne
@@ -116,6 +119,39 @@ class Person(
 
         fun fromJson(jsonStr: String): Person {
             return Gson().fromJson(jsonStr, Person::class.java)
+        }
+
+        fun fromXML(xmlStr: String): Person {
+            val docb = DocumentBuilderFactory.newInstance()
+            val doc = docb.newDocumentBuilder()
+            val input = InputSource()
+            input.setCharacterStream(StringReader(xmlStr))
+            val d = doc.parse(input)
+            val name = d.getElementsByTagName("name").item(0).textContent
+            val middlename = d.getElementsByTagName("middlename").item(0).textContent
+            val firstName = d.getElementsByTagName("firstname").item(0).textContent
+            val phoneElements = d.getElementsByTagName("phone")
+
+            var person = Person(
+                name,
+                firstName,
+                middlename,
+                mutableListOf(
+                    Phone(
+                        phoneElements.item(0).textContent,
+                        Phone.Type.from(phoneElements.item(0).attributes.item(0).textContent)
+                    ),
+                    Phone(
+                        phoneElements.item(1).textContent,
+                        Phone.Type.from(phoneElements.item(1).attributes.item(0).textContent)
+                    ),
+                    Phone(
+                        phoneElements.item(2).textContent,
+                        Phone.Type.from(phoneElements.item(2).attributes.item(0).textContent)
+                    )
+                )
+            )
+            return person
         }
     }
 }
