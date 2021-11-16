@@ -6,7 +6,6 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
 import java.lang.ref.WeakReference
 import java.util.*
 

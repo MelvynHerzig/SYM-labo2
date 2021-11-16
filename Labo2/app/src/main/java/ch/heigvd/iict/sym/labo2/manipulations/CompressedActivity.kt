@@ -1,25 +1,21 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
-
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
+import ch.heigvd.iict.sym.labo2.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.comm.ContentType
 import ch.heigvd.iict.sym.labo2.comm.RequestMethod
 import ch.heigvd.iict.sym.labo2.comm.SymComManager
 import ch.heigvd.iict.sym.labo2.comm.SymComStringRequest
-import ch.heigvd.iict.sym.labo2.models.Person
 
 /**
  * Activité implémentant le protocole de communication compressé.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 class CompressedActivity : BaseActivity() {
 

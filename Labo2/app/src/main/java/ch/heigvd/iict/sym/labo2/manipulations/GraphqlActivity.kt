@@ -1,8 +1,3 @@
-/**
- * @author Berney Alec
- * @author Forestier Quentin
- * @author Herzig Melvyn
- */
 package ch.heigvd.iict.sym.labo2.manipulations
 
 import android.os.Bundle
@@ -10,7 +5,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
-import ch.heigvd.iict.sym.lab.comm.CommunicationEventListener
+import ch.heigvd.iict.sym.labo2.comm.CommunicationEventListener
 import ch.heigvd.iict.sym.labo2.R
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -25,6 +20,9 @@ import org.json.JSONObject
  * Activité implémentant une communication avec graphQL.
  * Affiche une liste d'autheur dans un spinner et lorsque un
  * autheur est sélectionné, ses oeuvres sont affichées dans un recyclerView.
+ * @author Berney Alec
+ * @author Forestier Quentin
+ * @author Herzig Melvyn
  */
 class GraphqlActivity : BaseActivity() {
 
