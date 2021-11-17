@@ -2,7 +2,9 @@ package ch.heigvd.iict.sym.labo2.comm
 
 import android.os.Handler
 import android.os.Looper
-import java.io.*
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.OutputStream
 import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
