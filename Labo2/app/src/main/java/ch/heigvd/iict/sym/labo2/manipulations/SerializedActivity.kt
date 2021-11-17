@@ -84,11 +84,10 @@ class SerializedActivity : BaseActivity() {
                     ContentType.XML -> sendXML(person)
                     ContentType.TEXT -> sendText(person)
                 }
-
-
+            } else {
+                Toast.makeText(baseContext, "Des champs n'ont pas été rempli", Toast.LENGTH_SHORT)
+                    .show()
             }
-            Toast.makeText(baseContext, "Des champs n'ont pas été rempli", Toast.LENGTH_SHORT)
-                .show()
         }
     }
 
