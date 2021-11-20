@@ -28,7 +28,7 @@ class SymComThread(
 
     /**
      * Classe interne "statique" pour permettre la libération du SymComThread
-     * dès que le post sur le handler a été effectué sans pour autant avoir été traité
+     * dès que le poste sur le handler a été effectué sans pour autant avoir été traité.
      */
     class ResponseRunnable(
         private val listener: WeakReference<CommunicationEventListener>,
@@ -52,6 +52,7 @@ class SymComThread(
         val postData : ByteArray
 
         try {
+            // Préparation de la requête.
             postData = request.getBytesFromBody()
 
             connection.requestMethod = request.requestMethod.value

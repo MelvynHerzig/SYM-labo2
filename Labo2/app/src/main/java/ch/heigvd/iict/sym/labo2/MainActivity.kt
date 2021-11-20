@@ -10,6 +10,7 @@ import ch.heigvd.iict.sym.labo2.manipulations.*
  * Activité principale permettant de lancer les 5 activités
  * permettant de tester dufférents protocoles de communication applicatifs.
  * Respectivement: asynchrone, retardé, sérialisé, compressé et graphQL.
+ * Chaque activité utilise une entité du SymComManager.
  * @author Berney Alec
  * @author Forestier Quentin
  * @author Herzig Melvyn

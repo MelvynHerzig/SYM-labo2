@@ -13,6 +13,9 @@ class SymComBytesRequest (url: String,
                           isCompressed: Boolean)
     : SymComRequest(url, contentType, requestMethod, isCompressed) {
 
+    /**
+     * Retourne le contenu de la requête
+     */
     override fun getBytesFromBody() : ByteArray {
         return body
     }

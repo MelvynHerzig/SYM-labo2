@@ -8,6 +8,10 @@ package ch.heigvd.iict.sym.labo2.models
  * @author Herzig Melvyn
  */
 data class Author(val id: Int, val name: String) {
+
+    /**
+     * Stringify les informations de l'autheur.
+     */
     override fun toString(): String {
         return "${id}) ${name}"
     }

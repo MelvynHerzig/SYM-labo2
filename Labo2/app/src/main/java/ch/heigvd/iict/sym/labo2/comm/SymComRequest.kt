@@ -12,9 +12,12 @@ abstract class SymComRequest (val url : String,
                               val requestMethod: RequestMethod,
                               val isCompressed: Boolean) {
 
+    /**
+     * Récupère le body de la requête sous forme de ByteArray
+     */
     abstract fun getBytesFromBody() : ByteArray
 
-    // Identifiant de la requête
+    // Identifiant de la requête, surtout utilisé pour le debug avec le SymcomManager
     private val id: Int = getId()
 
     /**

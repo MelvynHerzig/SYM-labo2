@@ -17,7 +17,7 @@ import java.util.LinkedList
  * Classe responsable de gérer la communication avec le thread de communication SymComThead
  * @param context Contexte de l'activité executant le manager pour récupérer l'état de la connexion.
  * @param debug Par défaut faux, si vrai notifie le communication event listener lorsque la requête
- * est mise en attente ou traitée.
+ *              est mise en attente ou traitée.
  * @author Berney Alec
  * @author Forestier Quentin
  * @author Herzig Melvyn
@@ -53,14 +53,14 @@ class SymComManager(context: Context, private val debug: Boolean = false) {
     }
 
     /**
-     * Set le listener qui sera utilisé pour les requêtes suivantes.
+     * Définit le listener qui sera associé aux requêtes suivantes.
      */
     fun setCommunicationEventListener(communicationEventListener: CommunicationEventListener) {
         mCommunicationEventListener = WeakReference(communicationEventListener)
     }
 
     /**
-     * Permet d'envoyer une requête au serveur
+     * Permet d'envoyer une requête.
      */
     fun sendRequest( request: SymComRequest ) {
 
@@ -126,8 +126,8 @@ class SymComManager(context: Context, private val debug: Boolean = false) {
     }
 
     /**
-     * Post a response on UI thread using the mCommunicationEventListener because this function can be
-     * called from timer context
+     * Poste une réponse sur le UI thread en utilisant handleServerResponse du
+     * CommunicationEventListener associé à la requête si le SymcomManager est en mode debug.
      */
     private fun responseIfDebug(message: String, listener: WeakReference<CommunicationEventListener>){
         if(debug) {
@@ -138,7 +138,7 @@ class SymComManager(context: Context, private val debug: Boolean = false) {
     }
 
     /**
-     * Quitte le symComManager et abandonne les requêtes cachées.
+     * Quitte le symComManager et abandonne les requêtes en attentes.
      */
     fun quit() {
         mTimer.cancel()

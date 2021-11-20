@@ -9,7 +9,7 @@ import ch.heigvd.iict.sym.labo2.R
 import ch.heigvd.iict.sym.labo2.manipulations.adapter.StringListAdapter.BookViewHolder
 
 /**
- * Adapteur d'une liste de livre (liste de titres).
+ * Adapteur d'une liste de livres (liste de titres).
  * Adapté de: https://developer.android.com/guide/topics/ui/layout/recyclerview
  * @param books Liste de titres à adapter.
  * @author Berney Alec
@@ -46,7 +46,7 @@ class StringListAdapter(private val books: List<String>) :  RecyclerView.Adapter
     override fun getItemCount() = books.size
 
     /**
-     * Fourni une référence sur le type de vue utilisée.
+     * Fournit une référence sur le type de vue utilisée.
      */
     class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val bookItemView : TextView

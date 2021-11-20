@@ -45,6 +45,7 @@ class DelayedActivity : BaseActivity() {
 
             override fun handleServerResponse(response: ByteArray) {
 
+                // Comme le symcom manager on log l'état des requêtes.
                 val strResponse = String(response)
                 if (responseField.text == "") {
                     responseField.text = strResponse
